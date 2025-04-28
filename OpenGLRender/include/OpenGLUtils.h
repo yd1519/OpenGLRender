@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OPENGLUTILS_H
+#define OPENGLUTILS_H
 
 #include <string>
 #include <glad/glad.h>
@@ -52,3 +53,5 @@ namespace OpenGL {
 #endif
 
 }
+
+#endif

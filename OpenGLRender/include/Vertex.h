@@ -8,7 +8,7 @@
 #include "GLMInc.h"
 #include "OpenGLUtils.h"
 
-namespace OpenGl {
+namespace OpenGL {
 //用于定义顶点属性指针时使用
 struct VertexAttributeDesc {
 	size_t size;
@@ -25,7 +25,7 @@ struct VertexArray {
 	//uint8_t* 可以隐式转换为其他指针类型（如 float*），
 	// 便于后续绑定到图形 API 的顶点缓冲区。
 	uint8_t* vertexesBuffer = nullptr;
-	size_t vertexesBuffurLength = 0; //顶点数据总长度。
+	size_t vertexesBufferLength = 0; //顶点数据总长度。
 
 	int32_t* indexBuffer = nullptr;
 	size_t indexBufferLength = 0; // 索引数量
@@ -49,7 +49,7 @@ public:
 		GL_CHECK(glGenBuffers(1, &vbo_));
 		GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vbo_));
 		GL_CHECK(glBufferData(GL_ARRAY_BUFFER,
-								vertexArr.vertexesBuffurLength,
+								vertexArr.vertexesBufferLength,
 								vertexArr.vertexesBuffer,
 								GL_STATIC_DRAW));
 		//配置顶点属性
@@ -103,8 +103,7 @@ private:
 	GLuint ebo_ = 0;
 	size_t indicesCnt_ = 0;
 };
-
-
 }
+
 
 #endif
