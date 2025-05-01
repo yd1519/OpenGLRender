@@ -1,14 +1,14 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "GLMInc.h"
+#include "Base/GLMInc.h"
 #include <string>
 #include <vector>
 #include <memory>
-#include "Buffer.h"
-#include "Texture.h"
-#include "ShaderProgram.h"
-#include "RenderStates.h"
+#include "Base/Buffer.h"
+#include "Render/Texture.h"
+#include "Render/ShaderProgram.h"
+#include "Render/RenderStates.h"
 
 namespace OpenGL {
 
@@ -98,7 +98,7 @@ struct UniformsIBLPrefilter {
 
 //存储纹理的原始数据和参数：
 struct TextureData {
-	std::string tag;
+	std::string tag; //存储纹理图像的绝对地址
 	size_t width = 0;
 	size_t height = 0;
 	std::vector<std::shared_ptr<Buffer<RGBA>>> data;
@@ -156,13 +156,14 @@ public:
 	AlphaMode alphaMode = Alpha_Opaque;
 
 	glm::vec4 baseColor = glm::vec4(1.f);
-	float pointSize = 1.f;
-	float lineWidth = 1.f;
+	float pointSize = 1.f; // 用于点光源
+	float lineWidth = 1.f; // 用于网格线
 
-	std::unordered_map<int, TextureData> textureData;//原始的纹理数据
+	// key ：自定义纹理类型     
+	std::unordered_map<int, TextureData> textureData;//原始的cpu端纹理数据
 
 	std::set<std::string> shaderDefines;
-	std::unordered_map<int, std::shared_ptr<Texture>> textures;//纹理对象
+	std::unordered_map<int, std::shared_ptr<Texture>> textures; //纹理对象
 	std::shared_ptr<MaterialObject> materialObj = nullptr;
 };
 

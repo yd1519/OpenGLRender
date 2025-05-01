@@ -15,76 +15,109 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Logger.h">
+    <ClInclude Include="include\Base\Logger.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\OpenGLUtils.h">
+    <ClInclude Include="include\Render\OpenGL\OpenGLUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\FileUtils.h">
+    <ClInclude Include="include\Base\FileUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLMInc.h">
+    <ClInclude Include="include\Base\GLMInc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLSLUtils.h">
+    <ClInclude Include="include\Render\OpenGL\GLSLUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Vertex.h">
+    <ClInclude Include="include\Render\Vertex.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\ShaderProgram.h">
+    <ClInclude Include="include\Render\ShaderProgram.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Uniform.h">
+    <ClInclude Include="include\Render\Uniform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\UUID.h">
+    <ClInclude Include="include\Base\UUID.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\MemoryUtils.h">
+    <ClInclude Include="include\Base\MemoryUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Buffer.h">
+    <ClInclude Include="include\Base\Buffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Texture.h">
+    <ClInclude Include="include\Render\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\RenderStates.h">
+    <ClInclude Include="include\Render\RenderStates.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\FrameBuffer.h">
+    <ClInclude Include="include\Render\FrameBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\EnumsOpenGL.h">
+    <ClInclude Include="include\Render\OpenGL\EnumsOpenGL.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Camera.h">
+    <ClInclude Include="include\Viewer\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Material.h">
+    <ClInclude Include="include\Viewer\Material.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Material.cpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Model.h">
+    <ClInclude Include="include\Viewer\Model.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\ThreadPool.h">
+    <ClInclude Include="include\Base\ThreadPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\ModelLoader.h">
+    <ClInclude Include="include\Viewer\ModelLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Config.h">
+    <ClInclude Include="include\Viewer\Config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\Geometry.h">
+    <ClInclude Include="include\Base\Geometry.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\ImageUtils.h">
+    <ClInclude Include="include\Base\ImageUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Cube.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Base\StringUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\Renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\TextureOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\VertexOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\UniformOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\ShaderProgramOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\FrameBufferOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\OpenGL\RendererOpenGL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\PipelineStates.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Viewer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,13 +131,19 @@
     <ClCompile Include="src\Logger.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="include\glad.c">
+    <ClCompile Include="src\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ModelLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ImageUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RendererOpenGL.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

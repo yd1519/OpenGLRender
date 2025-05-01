@@ -1,8 +1,8 @@
 #ifndef ENUMSOPENGL_H
 #define ENUMSOPENGL_H
 
-#include "RenderStates.h"
-#include "Texture.h"
+#include "Render/RenderStates.h"
+#include "Render/Texture.h"
 namespace OpenGL {
 
 #define CASE_CVT_GL(PRE, TOKEN) case PRE##TOKEN: return GL_##TOKEN

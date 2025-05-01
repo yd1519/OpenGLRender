@@ -1,9 +1,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "Vertex.h"
-#include "Material.h"
-#include "Geometry.h"
+#include "Render/Vertex.h"
+#include "Viewer/Material.h"
+#include "Base/Geometry.h"
+
 namespace OpenGL {
 
 //定义单个顶点
@@ -18,7 +19,7 @@ struct Vertex {
 struct ModelVertexes : VertexArray {
 	PrimitiveType primitiveType;
 	size_t primitiveCnt = 0;
-	std::vector<Vertex> vertexes;
+	std::vector<Vertex> vertexes; //最后会被转化为指针类型存储
 	std::vector<int32_t> indices;
 
 	std::shared_ptr<VertexArrayObject> vao = nullptr;
@@ -30,7 +31,7 @@ struct ModelVertexes : VertexArray {
 		}
 	}
 
-	//初始化顶点属性描述与缓冲指针
+	//初始化顶点属性描述与缓冲指针 , 创建自定义顶点缓冲区
 	void InitVertexes() {
 		vertexSize = sizeof(Vertex);
 
@@ -51,7 +52,7 @@ struct ModelVertexes : VertexArray {
 };
 
 struct ModelBase : ModelVertexes {
-	//BoundingBox aabb{};
+	BoundingBox aabb{};
 	std::shared_ptr<Material> material = nullptr;
 
 	virtual void resetStates() {
@@ -67,13 +68,17 @@ struct ModelLines : ModelBase {};
 struct ModelMesh : ModelBase {};
 
 struct ModelNode {
-	//glm::mat4 transform = glm::mat4(1.0f);
+	/*aiNode::mTransformation​​ 是一个描述节点（Node）相对于其父节点（Parent Node）的局部空间变换的4x4变换矩阵。
+	它定义了该节点包含的所有网格（Mesh）在模型层级中的位置、旋转和缩放状态。
+	相当于内部的model矩阵
+	*/
+	glm::mat4 transform = glm::mat4(1.0f);
 	std::vector<ModelMesh> meshes;
 	std::vector<ModelNode> children;
 };
 
 struct Model {
-	std::string resourcePath;
+	std::string resourcePath;//模型文件绝对路径
 	
 	ModelNode rootNode;
 	BoundingBox rootAABB;
@@ -82,7 +87,7 @@ struct Model {
 	size_t primitiveCnt = 0;
 	size_t vertexCnt = 0;
 
-	glm::mat4 centeredTransform;
+	glm::mat4 centeredTransform;// 用于调整模型到特定大小，以及移动到指定位置
 
 	void resetStates() {
 		resetNodeStates(rootNode);
@@ -113,9 +118,6 @@ struct DemoScene {
 		skybox.resetStates();
 	}
 };
-
-
-
 
 }
 

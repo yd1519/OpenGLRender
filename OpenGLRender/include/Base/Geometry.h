@@ -10,13 +10,21 @@ public:
     BoundingBox() = default;
     BoundingBox(const glm::vec3& a, const glm::vec3& b) : min(a), max(b) {}
 
+    // 获取边界框的八个顶点坐标
     void getCorners(glm::vec3* dst) const;
+
+    // 对边界框进行矩阵变换，生成新的边界框
     BoundingBox transform(const glm::mat4& matrix) const;
-    bool intersects(const BoundingBox& box) const;//判断当前边界框是否与另一个边界框相交。
-    void merge(const BoundingBox& box);//将当前边界框与另一个边界框合并，生成一个新的边界框。
+
+    //判断当前边界框是否与另一个边界框相交。
+    bool intersects(const BoundingBox& box) const;
+
+    //将当前边界框与另一个边界框合并，生成一个新的边界框。
+    void merge(const BoundingBox& box);
 
 protected:
-    static void updateMinMax(glm::vec3* point, glm::vec3* min, glm::vec3* max);//更新 min 和 max 的值，确保它们包含 point。
+    // 更新 min 和 max 的值，确保它们包含 point
+    static void updateMinMax(glm::vec3* point, glm::vec3* min, glm::vec3* max);
 
 public:
     glm::vec3 min{ 0.f, 0.f, 0.f };//分别表示边界框的最小点和最大点
@@ -29,7 +37,7 @@ public:
     enum PlaneIntersects {//表示平面与几何体的相交状态
         Intersects_Cross = 0,
         Intersects_Tangent = 1,
-        Intersects_Front = 2,
+        Intersects_Front = 2,//几何体 ​​全部​​ 位于平面法线指向的一侧
         Intersects_Back = 3
     };
     //通过法向量 n 和平面上的点 pt 设置平面。
@@ -40,6 +48,7 @@ public:
 
     //计算点 pt 到平面的距离。
     float distance(const glm::vec3& pt) const {
+        // 点到平面的有符号距离 d = dot(normal_, p) + d_； 那么使得方程等于0的点就是平面上的点，那么距离也就是0
         return glm::dot(normal_, pt) + d_;
     }
 
@@ -51,18 +60,19 @@ public:
     //判断平面与边界框的相交情况。
     Plane::PlaneIntersects intersects(const BoundingBox& box) const;
 
-    // check intersect with point (world space)
+    // 判断点是否在平面上 (世界坐标)
     Plane::PlaneIntersects intersects(const glm::vec3& p0) const;
 
-    // check intersect with line segment (world space)
+    // 判断与线段是否相交 (世界坐标)
     Plane::PlaneIntersects intersects(const glm::vec3& p0, const glm::vec3& p1) const;
 
-    // check intersect with triangle (world space)
+    // 判断与三角形是否相交 (世界坐标)
     Plane::PlaneIntersects intersects(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2) const;
 
 private:
+    // 方程：n.dot(p) + d = 0; 
     glm::vec3 normal_;
-    float d_ = 0;
+    float d_ = 0;//​​ 平面到原点的有符号距离​​
 };
 
 

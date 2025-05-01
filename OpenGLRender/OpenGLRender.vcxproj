@@ -156,38 +156,51 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Buffer.h" />
-    <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Config.h" />
-    <ClInclude Include="include\EnumsOpenGL.h" />
-    <ClInclude Include="include\FileUtils.h" />
-    <ClInclude Include="include\FrameBuffer.h" />
-    <ClInclude Include="include\Geometry.h" />
-    <ClInclude Include="include\GLMInc.h" />
-    <ClInclude Include="include\GLSLUtils.h" />
-    <ClInclude Include="include\ImageUtils.h" />
-    <ClInclude Include="include\Logger.h" />
-    <ClInclude Include="include\Material.h" />
-    <ClInclude Include="include\MemoryUtils.h" />
-    <ClInclude Include="include\Model.h" />
-    <ClInclude Include="include\ModelLoader.h" />
-    <ClInclude Include="include\OpenGLUtils.h" />
-    <ClInclude Include="include\RenderStates.h" />
-    <ClInclude Include="include\ShaderProgram.h" />
-    <ClInclude Include="include\Texture.h" />
-    <ClInclude Include="include\ThreadPool.h" />
-    <ClInclude Include="include\Uniform.h" />
-    <ClInclude Include="include\UUID.h" />
-    <ClInclude Include="include\Vertex.h" />
+    <ClInclude Include="include\Base\Buffer.h" />
+    <ClInclude Include="include\Render\OpenGL\FrameBufferOpenGL.h" />
+    <ClInclude Include="include\Render\OpenGL\RendererOpenGL.h" />
+    <ClInclude Include="include\Render\OpenGL\ShaderProgramOpenGL.h" />
+    <ClInclude Include="include\Render\OpenGL\UniformOpenGL.h" />
+    <ClInclude Include="include\Render\OpenGL\VertexOpenGL.h" />
+    <ClInclude Include="include\Render\PipelineStates.h" />
+    <ClInclude Include="include\Viewer\Camera.h" />
+    <ClInclude Include="include\Viewer\Config.h" />
+    <ClInclude Include="include\Viewer\Cube.h" />
+    <ClInclude Include="include\Render\OpenGL\EnumsOpenGL.h" />
+    <ClInclude Include="include\Base\FileUtils.h" />
+    <ClInclude Include="include\Render\FrameBuffer.h" />
+    <ClInclude Include="include\Base\Geometry.h" />
+    <ClInclude Include="include\Base\GLMInc.h" />
+    <ClInclude Include="include\Render\OpenGL\GLSLUtils.h" />
+    <ClInclude Include="include\Base\ImageUtils.h" />
+    <ClInclude Include="include\Base\Logger.h" />
+    <ClInclude Include="include\Viewer\Material.h" />
+    <ClInclude Include="include\Base\MemoryUtils.h" />
+    <ClInclude Include="include\Viewer\Model.h" />
+    <ClInclude Include="include\Viewer\ModelLoader.h" />
+    <ClInclude Include="include\Render\OpenGL\OpenGLUtils.h" />
+    <ClInclude Include="include\Render\Renderer.h" />
+    <ClInclude Include="include\Render\RenderStates.h" />
+    <ClInclude Include="include\Render\ShaderProgram.h" />
+    <ClInclude Include="include\Base\StringUtils.h" />
+    <ClInclude Include="include\Render\Texture.h" />
+    <ClInclude Include="include\Render\OpenGL\TextureOpenGL.h" />
+    <ClInclude Include="include\Base\ThreadPool.h" />
+    <ClInclude Include="include\Render\Uniform.h" />
+    <ClInclude Include="include\Base\UUID.h" />
+    <ClInclude Include="include\Render\Vertex.h" />
+    <ClInclude Include="include\Viewer\Viewer.h" />
     <ClInclude Include="src\Material.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\glad.c" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLSLUtils.cpp" />
     <ClCompile Include="src\ImageUtils.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ModelLoader.cpp" />
+    <ClCompile Include="src\RendererOpenGL.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

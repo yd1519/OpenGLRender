@@ -2,7 +2,7 @@
 #define RENDERSTATE_H
 
 
-#include "GLMInc.h"
+#include "Base/GLMInc.h"
 
 namespace OpenGL {
 
@@ -96,8 +96,10 @@ struct RenderStates {
 
 //帧缓冲清除配置
 struct ClearStates {
-    bool depthFlag = false;
+    // 表示是否清理
+    bool depthFlag = false; 
     bool colorFlag = false;
+
     glm::vec4 clearColor = glm::vec4(0.f);
     float clearDepth = 1.f;
 };

@@ -18,6 +18,7 @@ enum AAType {
 };
 
 class Config {
+public:
 	std::string modelName;
 	std::string modelPath;
 	std::string skyboxName;

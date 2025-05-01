@@ -34,11 +34,11 @@ public:
 	void pushTask(const F& task) {
 		{//减少锁的作用域，尽快释放锁
 			const std::lock_guard<std::mutex> lock(mutex_);
-			tasks_.push(std::function<void(size_t)>(task));
+			tasks_.push(std::function<void(size_t)>(task));//可以接受参数是自己子集的函数。
 		}
 		tasksCnt_++;
 	}
-	//将给的task的进行打包，存储在tasks_中。
+	//将给的task进行参数打包，存储在tasks_中。
 	template<class F, class... A>
 	void pushTask(const F& task, const A &...args) {
 		pushTask([task, args...] {task(args...); });

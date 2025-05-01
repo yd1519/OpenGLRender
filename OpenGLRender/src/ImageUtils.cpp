@@ -4,8 +4,8 @@
 #include <stb_image/stb_image.h>
 #include <stb_image/stb_image_write.h>
 
-#include "ImageUtils.h"
-#include "Logger.h"
+#include "Base/ImageUtils.h"
+#include "Base/Logger.h"
 
 namespace OpenGL {
 

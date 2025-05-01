@@ -1,4 +1,4 @@
-#include "Material.h"
+#include "Viewer/Material.h"
 
 
 namespace OpenGL {

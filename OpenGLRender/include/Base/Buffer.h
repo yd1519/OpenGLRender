@@ -1,8 +1,8 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "GLMInc.h"
-#include "MemoryUtils.h"
+#include "Base/GLMInc.h"
+#include "Base/MemoryUtils.h"
 
 namespace OpenGL {
 
@@ -138,8 +138,80 @@ class Buffer {
   size_t dataSize_ = 0;     //缓冲区实际分配的总元素个数（innerWidth_ * innerHeight_）。
 };
 
+template<typename T>//将图像划分为固定大小的块（默认 4x4），块内按行存储。
+class TiledBuffer : public Buffer<T> {
+public:
 
+    void initLayout() override {
+        tileWidth_ = (this->width_ + tileSize_ - 1) / tileSize_;
+        tileHeight_ = (this->height_ + tileSize_ - 1) / tileSize_;
+        this->innerWidth_ = tileWidth_ * tileSize_;
+        this->innerHeight_ = tileHeight_ * tileSize_;
+}
 
+    inline size_t convertIndex(size_t x, size_t y) const override {
+        uint16_t tileX = x >> bits_;              // x / tileSize_
+        uint16_t tileY = y >> bits_;              // y / tileSize_
+        uint16_t inTileX = x & (tileSize_ - 1);   // x % tileSize_
+        uint16_t inTileY = y & (tileSize_ - 1);   // y % tileSize_
+
+        return ((tileY * tileWidth_ + tileX) << bits_ << bits_) + (inTileY << bits_) + inTileX;
+    }
+
+    BufferLayout getLayout() const override {
+        return Layout_Tiled;
+    }
+
+private:
+    const static int tileSize_ = 4;   // 4 x 4
+    const static int bits_ = 2;       // tileSize_ = 2^bits_
+    size_t tileWidth_ = 0;
+    size_t tileHeight_ = 0;
+};
+
+template<typename T>//将图像划分为固定大小的块（默认 32x32），块内按 Morton 顺序存储。
+class MortonBuffer : public Buffer<T> {
+public:
+
+    void initLayout() override {
+        tileWidth_ = (this->width_ + tileSize_ - 1) / tileSize_;
+        tileHeight_ = (this->height_ + tileSize_ - 1) / tileSize_;
+        this->innerWidth_ = tileWidth_ * tileSize_;
+        this->innerHeight_ = tileHeight_ * tileSize_;
+    }
+
+    /**
+     * Ref: https://gist.github.com/JarkkoPFC/0e4e599320b0cc7ea92df45fb416d79a
+     */
+    static inline uint16_t encode16_morton2(uint8_t x_, uint8_t y_) {
+        uint32_t res = x_ | (uint32_t(y_) << 16);
+        res = (res | (res << 4)) & 0x0f0f0f0f;
+        res = (res | (res << 2)) & 0x33333333;
+        res = (res | (res << 1)) & 0x55555555;
+        return uint16_t(res | (res >> 15));
+    }
+
+    inline size_t convertIndex(size_t x, size_t y) const override {
+        uint16_t tileX = x >> bits_;              // x / tileSize_
+        uint16_t tileY = y >> bits_;              // y / tileSize_
+        uint16_t inTileX = x & (tileSize_ - 1);   // x % tileSize_
+        uint16_t inTileY = y & (tileSize_ - 1);   // y % tileSize_
+
+        uint16_t mortonIndex = encode16_morton2(inTileX, inTileY);
+
+        return ((tileY * tileWidth_ + tileX) << bits_ << bits_) + mortonIndex;
+    }
+
+    BufferLayout getLayout() const override {
+        return Layout_Morton;
+    }
+
+private:
+    const static int tileSize_ = 32;  // 32 x 32
+    const static int bits_ = 5;       // tileSize_ = 2^bits_
+    size_t tileWidth_ = 0;
+    size_t tileHeight_ = 0;
+};
 
 template<typename T>
 std::shared_ptr<Buffer<T>> Buffer<T>::makeDefault(size_t w, size_t h) {
