@@ -62,6 +62,10 @@ public:
 	explicit UniformSamplerOpenGL(const std::string& name, TextureType type, TextureFormat format)
 		:UniformSampler(name, type, format) {}
 
+	int getLocation(ShaderProgram& program) override {
+		return glGetUniformLocation(program.getId(), name_.c_str());
+	}
+
 	// location： 采样器在着色器程序中的位置
 	void bindProgram(ShaderProgram& program, int location) override {
 		if (location < 0) {
