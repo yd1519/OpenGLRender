@@ -9,238 +9,240 @@
 
 namespace OpenGL {
 
-	struct TextureOpenGLDesc {
-		GLint internalformat;// GPU内部存储格式(GL_RGB8, GL_DEPTH_COMPONENT....
-		GLenum format;  // CPU端像素数据格式（GL_RGBA, GL_DEPTH_COMPONENT,...)
-		GLenum type;	// CPU端像素数据类型​(GL_FLOAT, GL_UNSIGNED_BYTE..)
-	};
+struct TextureOpenGLDesc {
+	GLint internalformat;// GPU内部存储格式(GL_RGB8, GL_DEPTH_COMPONENT....
+	GLenum format;  // CPU端像素数据格式（GL_RGBA, GL_DEPTH_COMPONENT,...)
+	GLenum type;	// CPU端像素数据类型​(GL_FLOAT, GL_UNSIGNED_BYTE..)
+};
 
-	class TextureOpenGL : public Texture {
-	public:
+class TextureOpenGL : public Texture {
+public:
 		
-		static TextureOpenGLDesc GetOpenGLDesc(TextureFormat format) {
-			TextureOpenGLDesc ret{};
+	static TextureOpenGLDesc GetOpenGLDesc(TextureFormat format) {
+		TextureOpenGLDesc ret{};
 
-			switch (format) {
-			case TextureFormat_RGBA8: {
-				ret.internalformat = GL_RGBA;
-				ret.format = GL_RGBA;
-				ret.type = GL_UNSIGNED_BYTE;
-				break;
-			}
-			case TextureFormat_FLOAT32: {
-				ret.internalformat = GL_DEPTH_COMPONENT;
-				ret.format = GL_DEPTH_COMPONENT;
-				ret.type = GL_FLOAT;
-				break;
-			}
-			}
-
-			return ret;
+		switch (format) {
+		case TextureFormat_RGBA8: {
+			ret.internalformat = GL_RGBA;
+			ret.format = GL_RGBA;
+			ret.type = GL_UNSIGNED_BYTE;
+			break;
+		}
+		case TextureFormat_FLOAT32: {
+			ret.internalformat = GL_DEPTH_COMPONENT;
+			ret.format = GL_DEPTH_COMPONENT;
+			ret.type = GL_FLOAT;
+			break;
+		}
 		}
 
-		virtual ~TextureOpenGL() = default;
+		return ret;
+	}
 
-		int getId() {
-			return static_cast<int>(texId_);
+	virtual ~TextureOpenGL() = default;
+
+	int getId() {
+		return static_cast<int>(texId_);
+	}
+
+	//将当前纹理导出为图像文件,实现从GPU数据到CPU
+	void dumpImage(const char* path, uint32_t layer, uint32_t level) override {
+		if (multiSample) {
+			return;
+		}
+		//-------------------- 创建临时帧缓冲区对象(FBO)----------
+		GLuint fbo;
+		GL_CHECK(glGenFramebuffers(1, &fbo));
+		GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, fbo));
+		//----------------------根据纹理格式确定附件类型-------------
+		GLenum attachment = format == TextureFormat_FLOAT32 ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0;
+		//-------------------------确定纹理目标类型---------------------
+		GLenum target = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+		if (type == TextureType_CUBE) {
+			target = OpenGL::cvtCubeFace(static_cast<CubeMapFace>(layer));
+		}
+		GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texId_, level));
+
+		auto levelWidth = (int32_t)getLevelWidth(level);
+		auto levelHeight = (int32_t)getLevelHeight(level);
+
+		//----------------分配内存用于存储像素数据（RGBA格式）-------------------------
+		auto* pixels = new uint8_t[levelWidth * levelHeight * 4];
+		//--------------------------从帧缓冲区读取像素数据-------------------
+		GL_CHECK(glReadPixels(0, 0, levelWidth, levelHeight, glDesc_.format, glDesc_.type, pixels));
+
+		GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GL_CHECK(glDeleteFramebuffers(1, &fbo));
+
+		//---------------如果是浮点纹理（如深度图），转换为可视化的RGBA格式------------
+		if (format == TextureFormat_FLOAT32) {
+			ImageUtils::convertFloatImage(reinterpret_cast<RGBA*>(pixels), reinterpret_cast<float*>(pixels), levelWidth, levelHeight);
+		}
+		ImageUtils::writeImage(path, levelWidth, levelHeight, 4, pixels, levelWidth * 4, true);
+		delete[] pixels;
+	}
+
+protected:
+	GLenum target_ = 0; // 所创建纹理的类型
+	GLuint texId_ = 0;
+	TextureOpenGLDesc glDesc_{};
+};
+
+class Texture2DOpenGL : public TextureOpenGL {
+public:
+	explicit Texture2DOpenGL(const TextureDesc& desc) {
+		assert(desc.type == TextureType_2D);
+		width = desc.width;
+		height = desc.height;
+		type = TextureType_2D;
+		format = desc.format;
+		usage = desc.usage;
+		useMipmaps = desc.useMipmaps;
+		multiSample = desc.multiSample;
+		target_ = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+		glDesc_ = GetOpenGLDesc(format);
+		GL_CHECK(glGenTextures(1, &texId_));
+	}
+
+	~Texture2DOpenGL() override {
+		GL_CHECK(glDeleteTextures(1, &texId_));
+	}
+
+	// 设置环绕模式
+	void setSamplerDesc(SamplerDesc& sampler) override {
+		if (multiSample) {
+			return;
 		}
 
-		//将当前纹理导出为图像文件,实现从GPU数据到CPU
-		void dumpImage(const char* path, uint32_t layer, uint32_t level) override {
-			if (multiSample) {
-				return;
-			}
-			//-------------------- 创建临时帧缓冲区对象(FBO)----------
-			GLuint fbo;
-			GL_CHECK(glGenFramebuffers(1, &fbo));
-			GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, fbo));
-			//----------------------根据纹理格式确定附件类型-------------
-			GLenum attachment = format == TextureFormat_FLOAT32 ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0;
-			//-------------------------确定纹理目标类型---------------------
-			GLenum target = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-			if (type == TextureType_CUBE) {
-				target = OpenGL::cvtCubeFace(static_cast<CubeMapFace>(layer));
-			}
-			GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texId_, level));
+		//-------------------设置纹理环绕模式----------------
+		GL_CHECK(glBindTexture(target_, texId_));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_S, OpenGL::cvtWrap(sampler.wrapS)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_T, OpenGL::cvtWrap(sampler.wrapT)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MIN_FILTER, OpenGL::cvtFilter(sampler.filterMin)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MAG_FILTER, OpenGL::cvtFilter(sampler.filterMag)));
 
-			auto levelWidth = (int32_t)getLevelWidth(level);
-			auto levelHeight = (int32_t)getLevelHeight(level);
+		glm::vec4 borderColor = OpenGL::cvtBorderColor(sampler.borderColor);
+		GL_CHECK(glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, &borderColor[0]));
+	}
 
-			//----------------分配内存用于存储像素数据（RGBA格式）-------------------------
-			auto* pixels = new uint8_t[levelWidth * levelHeight * 4];
-			//--------------------------从帧缓冲区读取像素数据-------------------
-			GL_CHECK(glReadPixels(0, 0, levelWidth, levelHeight, glDesc_.format, glDesc_.type, pixels));
-
-			GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-			GL_CHECK(glDeleteFramebuffers(1, &fbo));
-
-			//---------------如果是浮点纹理（如深度图），转换为可视化的RGBA格式------------
-			if (format == TextureFormat_FLOAT32) {
-				ImageUtils::convertFloatImage(reinterpret_cast<RGBA*>(pixels), reinterpret_cast<float*>(pixels), levelWidth, levelHeight);
-			}
-			ImageUtils::writeImage(path, levelWidth, levelHeight, 4, pixels, levelWidth * 4, true);
-			delete[] pixels;
+	//设置纹理图像数据
+	void setImageData(const std::vector<std::shared_ptr<Buffer<RGBA>>>& buffers) override {
+		if (multiSample) {
+			LOGE("setImageData not support: multi sample texture");
+			return;
 		}
 
-	protected:
-		GLenum target_ = 0; // 所创建纹理的类型
-		GLuint texId_ = 0;
-		TextureOpenGLDesc glDesc_{};
-	};
-
-	class Texture2DOpenGL : public TextureOpenGL {
-	public:
-		explicit Texture2DOpenGL(const TextureDesc& desc) {
-			assert(desc.type == TextureType_2D);
-			width = desc.width;
-			height = desc.height;
-			type = TextureType_2D;
-			format = desc.format;
-			usage = desc.usage;
-			useMipmaps = desc.useMipmaps;
-			multiSample = desc.multiSample;
-			target_ = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-
-			glDesc_ = GetOpenGLDesc(format);
-			GL_CHECK(glGenTextures(1, &texId_));
+		if (format != TextureFormat_RGBA8) {
+			LOGE("setImageData error: format not match");
+			return;
 		}
 
-		~Texture2DOpenGL() override {
-			GL_CHECK(glDeleteTextures(1, &texId_));
+		if (width != buffers[0]->getWidth() || height != buffers[0]->getHeight()) {
+			LOGE("setImageData error: size not match");
+			return;
 		}
 
-		// 设置环绕模式
-		void setSamplerDesc(SamplerDesc& sampler) override {
-			if (multiSample) {
-				return;
-			}
+		GL_CHECK(glBindTexture(target_, texId_));
+		GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type,
+			buffers[0]->getRawDataPtr()));
 
-			//-------------------设置纹理环绕模式----------------
-			GL_CHECK(glBindTexture(target_, texId_));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_S, OpenGL::cvtWrap(sampler.wrapS)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_T, OpenGL::cvtWrap(sampler.wrapT)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MIN_FILTER, OpenGL::cvtFilter(sampler.filterMin)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MAG_FILTER, OpenGL::cvtFilter(sampler.filterMag)));
+		if (useMipmaps) {
+			GL_CHECK(glGenerateMipmap(target_));
+		}
+	}
 
-			glm::vec4 borderColor = OpenGL::cvtBorderColor(sampler.borderColor);
-			GL_CHECK(glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, &borderColor[0]));
+	// 分配GPU内存
+	void initImageData() override {
+		GL_CHECK(glBindTexture(target_, texId_));
+		if (multiSample) {
+			GL_CHECK(glTexImage2DMultisample(target_, 4, glDesc_.internalformat, width, height, GL_TRUE));
+		}
+		else {
+			GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type, nullptr));
+		}
+	}
+
+};
+
+class TextureCubeOpenGL : public TextureOpenGL {
+public:
+	explicit TextureCubeOpenGL(const TextureDesc& desc) {
+		assert(desc.type == TextureType_CUBE);
+
+		width = desc.width;
+		height = desc.height;
+		type = TextureType_CUBE;
+		format = desc.format;
+		usage = desc.usage;
+		useMipmaps = desc.useMipmaps;
+		multiSample = desc.multiSample;
+		target_ = GL_TEXTURE_CUBE_MAP;
+
+		glDesc_ = GetOpenGLDesc(format);
+		GL_CHECK(glGenTextures(1, &texId_));
+	}
+	~TextureCubeOpenGL() {
+		GL_CHECK(glDeleteTextures(1, &texId_));
+	}
+
+	void setSamplerDesc(SamplerDesc& sampler) override {
+		if (multiSample) {
+			return;
 		}
 
-		//设置纹理图像数据
-		void setImageData(const std::vector<std::shared_ptr<Buffer<RGBA>>>& buffers) override {
-			if (multiSample) {
-				LOGE("setImageData not support: multi sample texture");
-				return;
-			}
+		GL_CHECK(glBindTexture(target_, texId_));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_S, OpenGL::cvtWrap(sampler.wrapS)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_T, OpenGL::cvtWrap(sampler.wrapT)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_R, OpenGL::cvtWrap(sampler.wrapR)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MIN_FILTER,
+			OpenGL::cvtFilter(sampler.filterMin)));
+		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MAG_FILTER,
+			OpenGL::cvtFilter(sampler.filterMag)));
 
-			if (format != TextureFormat_RGBA8) {
-				LOGE("setImageData error: format not match");
-				return;
-			}
+		glm::vec4 borderColor = OpenGL::cvtBorderColor(sampler.borderColor);
+		GL_CHECK(glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, &borderColor[0]));
+	}
 
-			if (width != buffers[0]->getWidth() || height != buffers[0]->getHeight()) {
-				LOGE("setImageData error: size not match");
-				return;
-			}
-
-			GL_CHECK(glBindTexture(target_, texId_));
-			GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type,
-				buffers[0]->getRawDataPtr()));
-
-			if (useMipmaps) {
-				GL_CHECK(glGenerateMipmap(target_));
-			}
+	void setImageData(const std::vector<std::shared_ptr<Buffer<RGBA>>>& buffers) override {
+		if (multiSample) {
+			return;
 		}
 
-		void initImageData() override {
-			GL_CHECK(glBindTexture(target_, texId_));
-			if (multiSample) {
-				GL_CHECK(glTexImage2DMultisample(target_, 4, glDesc_.internalformat, width, height, GL_TRUE));
-			}
-			else {
-				GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type, nullptr));
-			}
+		if (format != TextureFormat_RGBA8) {
+			LOGE("setImageData error: format not match");
+			return;
 		}
 
-	};
-
-	class TextureCubeOpenGL : public TextureOpenGL {
-	public:
-		explicit TextureCubeOpenGL(const TextureDesc& desc) {
-			assert(desc.type == TextureType_CUBE);
-
-			width = desc.width;
-			height = desc.height;
-			type = TextureType_CUBE;
-			format = desc.format;
-			usage = desc.usage;
-			useMipmaps = desc.useMipmaps;
-			multiSample = desc.multiSample;
-			target_ = GL_TEXTURE_CUBE_MAP;
-
-			glDesc_ = GetOpenGLDesc(format);
-			GL_CHECK(glGenTextures(1, &texId_));
-		}
-		~TextureCubeOpenGL() {
-			GL_CHECK(glDeleteTextures(1, &texId_));
+		if (width != buffers[0]->getWidth() || height != buffers[0]->getHeight()) {
+			LOGE("setImageData error: size not match");
+			return;
 		}
 
-		void setSamplerDesc(SamplerDesc& sampler) override {
-			if (multiSample) {
-				return;
-			}
-
-			GL_CHECK(glBindTexture(target_, texId_));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_S, OpenGL::cvtWrap(sampler.wrapS)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_T, OpenGL::cvtWrap(sampler.wrapT)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_R, OpenGL::cvtWrap(sampler.wrapR)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MIN_FILTER,
-				OpenGL::cvtFilter(sampler.filterMin)));
-			GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MAG_FILTER,
-				OpenGL::cvtFilter(sampler.filterMag)));
-
-			glm::vec4 borderColor = OpenGL::cvtBorderColor(sampler.borderColor);
-			GL_CHECK(glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, &borderColor[0]));
+		GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
+		for (int i = 0; i < 6; i++) {
+			GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
+				glDesc_.format, glDesc_.type, buffers[i]->getRawDataPtr()));
+		}
+		if (useMipmaps) {
+			GL_CHECK(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
+		}
+	}
+		
+	// 分配GPU内存
+	void initImageData() override {
+		GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
+		for (int i = 0; i < 6; i++) {
+			GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
+				glDesc_.format, glDesc_.type, nullptr));
 		}
 
-		void setImageData(const std::vector<std::shared_ptr<Buffer<RGBA>>>& buffers) override {
-			if (multiSample) {
-				return;
-			}
-
-			if (format != TextureFormat_RGBA8) {
-				LOGE("setImageData error: format not match");
-				return;
-			}
-
-			if (width != buffers[0]->getWidth() || height != buffers[0]->getHeight()) {
-				LOGE("setImageData error: size not match");
-				return;
-			}
-
-			GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
-			for (int i = 0; i < 6; i++) {
-				GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
-					glDesc_.format, glDesc_.type, buffers[i]->getRawDataPtr()));
-			}
-			if (useMipmaps) {
-				GL_CHECK(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
-			}
+		if (useMipmaps) {
+			GL_CHECK(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
 		}
-		// 分配GPU内存
-		void initImageData() override {
-			GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
-			for (int i = 0; i < 6; i++) {
-				GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
-					glDesc_.format, glDesc_.type, nullptr));
-			}
+	}
 
-			if (useMipmaps) {
-				GL_CHECK(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
-			}
-		}
-
-	};
+};
 }
 
 

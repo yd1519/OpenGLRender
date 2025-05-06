@@ -18,7 +18,7 @@ public:
 		return static_cast<int>(fbo_);
 	}
 
-	bool isVaild() override {
+	bool isValid() override {
 		//基础检查
 		if (!fbo_) {
 			return false;

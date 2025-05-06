@@ -45,7 +45,7 @@ public:
 	//全量更新Uniform缓冲对象
 	virtual void setData(void* data, int len) = 0;
 
-private:
+protected:
 	int blockSize = 0;
 };
 
@@ -57,7 +57,7 @@ public:
 
 	virtual void setTexture(const std::shared_ptr<Texture>& tex) = 0;
 
-private:
+protected:
 	TextureType type_;
 	TextureFormat format_;
 };
@@ -65,9 +65,9 @@ private:
 
 class ShaderResources {
 public:
-	//键：编号
-	std::unordered_map<int, std::shared_ptr<UniformBlock>> blocks;
-	std::unordered_map<int, std::shared_ptr<UniformSampler>> samplers;
+	
+	std::unordered_map<int, std::shared_ptr<UniformBlock>> blocks;//键：UniformBlockType
+	std::unordered_map<int, std::shared_ptr<UniformSampler>> samplers;//key:MaterialTexType
 };
 
 }

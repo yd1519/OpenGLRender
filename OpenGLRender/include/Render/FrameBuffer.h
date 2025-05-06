@@ -18,7 +18,7 @@ public:
 	
 	virtual int getId() const = 0;
 
-	virtual bool isVaild() = 0;
+	virtual bool isValid() = 0;
 
 	virtual void setColorAttachment(std::shared_ptr<Texture>& color, int level) {
 		colorAttachment_.tex = color;

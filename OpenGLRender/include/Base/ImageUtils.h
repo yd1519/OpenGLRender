@@ -1,7 +1,7 @@
 #ifndef IMAGEUTILS_H
 #define IMAGEUTILS_H
 
-#include "Buffer.h"
+#include "Base/Buffer.h"
 #include <string>
 
 namespace OpenGL {

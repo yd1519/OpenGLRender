@@ -59,6 +59,7 @@ const char* Material::samplerDefine(MaterialTexType usage) {
     return nullptr;
 }
 
+// cpu端材质类型与着色器程序中名称的对应
 const char* Material::samplerName(MaterialTexType usage) {
     switch (usage) {
     case MaterialTexType_ALBEDO:             return "u_albedoMap";

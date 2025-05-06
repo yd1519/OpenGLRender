@@ -8,7 +8,7 @@
 #include "Base/Buffer.h"
 #include "Render/Texture.h"
 #include "Render/ShaderProgram.h"
-#include "Render/RenderStates.h"
+#include "Render/PipelineStates.h"
 
 namespace OpenGL {
 
@@ -17,7 +17,7 @@ enum AlphaMode {
 	Alpha_Blend,
 };
 
-//定义材质使用的着色模型：
+//定义着色模式：
 enum ShadingModel {
 	Shading_Unknown = 0,
 	Shading_BaseColor,// 基础颜色（无光照）
@@ -29,7 +29,7 @@ enum ShadingModel {
 	Shading_FXAA,// 快速近似抗锯齿
 };
 
-//纹理类型标识
+//纹理类型标识，可以在shaderresource中当索引
 enum MaterialTexType {
 	MaterialTexType_NONE = 0,
 
@@ -45,7 +45,7 @@ enum MaterialTexType {
 	MaterialTexType_IBL_IRRADIANCE, // IBL 辐照度贴图
 	MaterialTexType_IBL_PREFILTER,
 
-	MaterialTexType_QUAD_FILTER,
+	MaterialTexType_QUAD_FILTER, // 用于后处理
 
 	MaterialTexType_SHADOWMAP,// 阴影贴图
 };
@@ -59,6 +59,7 @@ enum UniformBlockType {
 	UniformBlock_IBLPrefilter,
 };
 
+/*-----------------------------------可以上传至着色器中------------------------*/
 //场景参数
 struct UniformsScene {
 	glm::vec3 u_ambientColor;
@@ -67,13 +68,13 @@ struct UniformsScene {
 	glm::vec3 u_pointLightColor;
 };
 
-// 模型参数
+// 模型变换相关参数
 struct UniformsModel {
 	glm::uint32_t u_reverseZ;
 	glm::mat4 u_modelMatrix;
 	glm::mat4 u_modelViewProjectionMatrix;
-	glm::mat3 u_inverseTransposeModelMatrix;
-	glm::mat4 u_shadowMVPMatrix;// 阴影映射的 MVP 矩阵
+	glm::mat3 u_inverseTransposeModelMatrix; // 用于法线变换
+	glm::mat4 u_shadowMVPMatrix;// v_shadowCoord = u_shadowMVPMatrix * vec4(worldPos, 1.0);
 };
 
 //定义材质相关的 ​​Uniform 变量
@@ -95,8 +96,10 @@ struct UniformsIBLPrefilter {
 	glm::float32_t u_srcResolution;
 	glm::float32_t u_roughness;
 };
+/*-----------------------------------------------------------------------------------*/
 
-//存储纹理的原始数据和参数：
+
+//存储纹理图像的原始数据和参数：
 struct TextureData {
 	std::string tag; //存储纹理图像的绝对地址
 	size_t width = 0;
@@ -107,11 +110,11 @@ struct TextureData {
 	WrapMode wrapModeW = Wrap_REPEAT;
 };
 
-//存储​​运行时资源​​（着色器、GPU状态）
-class MaterialObject {
+//存储​​渲染时所需资源​​（着色器、GPU状态）
+class MaterialObject { 
 public:
 	ShadingModel shadingModel = Shading_Unknown;
-	std::shared_ptr<RenderStates> renderStates;
+	std::shared_ptr<PipelineStates> pipelineStates;
 	std::shared_ptr<ShaderProgram> shaderProgram;
 	std::shared_ptr<ShaderResources> shaderResources;
 };
@@ -159,12 +162,12 @@ public:
 	float pointSize = 1.f; // 用于点光源
 	float lineWidth = 1.f; // 用于网格线
 
-	// key ：自定义纹理类型     
+	// key ：MaterialTexType     
 	std::unordered_map<int, TextureData> textureData;//原始的cpu端纹理数据
 
 	std::set<std::string> shaderDefines;
-	std::unordered_map<int, std::shared_ptr<Texture>> textures; //纹理对象
-	std::shared_ptr<MaterialObject> materialObj = nullptr;
+	std::unordered_map<int, std::shared_ptr<Texture>> textures; //GPU纹理对象，key：MaterialTexType
+	std::shared_ptr<MaterialObject> materialObj = nullptr;  //当着色模式变化时，需要重新生成
 };
 
 class SkyboxMaterial : public Material {

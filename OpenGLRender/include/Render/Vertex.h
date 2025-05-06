@@ -26,7 +26,7 @@ namespace OpenGL {
 	//定义顶点数组
 	struct VertexArray {
 
-		size_t vertexSize = 0;//单个顶点大小
+		size_t vertexSize = 0;//单个顶点数据大小
 		std::vector<VertexAttributeDesc> vertexesDesc;
 
 		//uint8_t* 可以隐式转换为其他指针类型（如 float*），

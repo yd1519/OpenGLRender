@@ -157,14 +157,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Base\Buffer.h" />
+    <ClInclude Include="include\Base\hashUtils.h" />
+    <ClInclude Include="include\Base\Platform.h" />
     <ClInclude Include="include\Render\OpenGL\FrameBufferOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\RendererOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\ShaderProgramOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\UniformOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\VertexOpenGL.h" />
     <ClInclude Include="include\Render\PipelineStates.h" />
+    <ClInclude Include="include\Render\Software\SamplerSoft.h" />
+    <ClInclude Include="include\Render\Software\ShaderProgramSoft.h" />
+    <ClInclude Include="include\Render\Software\ShaderSoft.h" />
+    <ClInclude Include="include\Render\Software\TextureSoft.h" />
+    <ClInclude Include="include\Render\Software\UniformSoft.h" />
+    <ClInclude Include="include\Render\Software\VertexSoft.h" />
     <ClInclude Include="include\Viewer\Camera.h" />
     <ClInclude Include="include\Viewer\Config.h" />
+    <ClInclude Include="include\Viewer\ConfigPanel.h" />
     <ClInclude Include="include\Viewer\Cube.h" />
     <ClInclude Include="include\Render\OpenGL\EnumsOpenGL.h" />
     <ClInclude Include="include\Base\FileUtils.h" />
@@ -174,6 +183,7 @@
     <ClInclude Include="include\Render\OpenGL\GLSLUtils.h" />
     <ClInclude Include="include\Base\ImageUtils.h" />
     <ClInclude Include="include\Base\Logger.h" />
+    <ClInclude Include="include\Viewer\Environment.h" />
     <ClInclude Include="include\Viewer\Material.h" />
     <ClInclude Include="include\Base\MemoryUtils.h" />
     <ClInclude Include="include\Viewer\Model.h" />
@@ -189,18 +199,28 @@
     <ClInclude Include="include\Render\Uniform.h" />
     <ClInclude Include="include\Base\UUID.h" />
     <ClInclude Include="include\Render\Vertex.h" />
+    <ClInclude Include="include\Viewer\QuadFilter.h" />
+    <ClInclude Include="include\Viewer\RenderDebug.h" />
     <ClInclude Include="include\Viewer\Viewer.h" />
+    <ClInclude Include="include\Viewer\ViewerManager.h" />
+    <ClInclude Include="include\Viewer\ViewerOpenGL.h" />
+    <ClInclude Include="include\Viewer\ViewerSoftware.h" />
     <ClInclude Include="src\Material.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ConfigPanel.cpp" />
+    <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLSLUtils.cpp" />
     <ClCompile Include="src\ImageUtils.cpp" />
     <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\md5.c" />
     <ClCompile Include="src\ModelLoader.cpp" />
+    <ClCompile Include="src\QuadFilter.cpp" />
+    <ClCompile Include="src\RenderDebug.cpp" />
     <ClCompile Include="src\RendererOpenGL.cpp" />
+    <ClCompile Include="src\Viewer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

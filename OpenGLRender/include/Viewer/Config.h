@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 #include <string>
-#include "GLMInc.h"
-
+#include "Base/GLMInc.h"
+#include "Render/Renderer.h"
 
 namespace OpenGL {
 
@@ -47,7 +47,7 @@ public:
 	glm::vec3 pointLightColor = { 0.5f, 0.5f, 0.5f };
 
 	int aaType = AAType_NONE;
-	
+	int rendererType = Renderer_OPENGL;
 };
 
 }

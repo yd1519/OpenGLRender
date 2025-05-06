@@ -22,7 +22,7 @@ struct ModelVertexes : VertexArray {
 	std::vector<Vertex> vertexes; //最后会被转化为指针类型存储
 	std::vector<int32_t> indices;
 
-	std::shared_ptr<VertexArrayObject> vao = nullptr;
+	std::shared_ptr<VertexArrayObject> vao = nullptr; //需要通过渲染器创建
 
 	//更新vbo中的数据
 	void UpdateVertexes() const {

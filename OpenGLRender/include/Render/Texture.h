@@ -78,7 +78,7 @@ struct TextureDesc {
 	uint32_t usage = TextureUsage_Sampler;
 	bool useMipmaps = false;
 	bool multiSample = false;
-	std::string tag;//用于调试；可以区分同名纹理
+	std::string tag;//用于调试/识别；可以当作创建hash值的参数
 };
 
 class Texture : public TextureDesc {

@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include "GLMInc.h"
+#include "Base/GLMInc.h"
 
 namespace OpenGL {
 //定义了一个AABB框。

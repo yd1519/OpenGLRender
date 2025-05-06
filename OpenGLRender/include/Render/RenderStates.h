@@ -84,7 +84,7 @@ struct RenderStates {
     BlendParameters blendParams;
 
     bool depthTest = false;
-    bool depthMask = true;
+    bool depthMask = true; // 表示能否进行深度写入
     DepthFunction depthFunc = DepthFunc_LESS;
 
     bool cullFace = false;

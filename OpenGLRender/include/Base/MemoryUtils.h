@@ -50,7 +50,7 @@ public:
 
 	template<class T>
 	static std::shared_ptr<T> makeAlignedBuffer(size_t elemCnt) {
-		if (elemCnt == ) {
+		if (elemCnt == 0) {
 			return nullptr;
 		}
 		//Lambda表达式，定义一个删除器。
@@ -59,20 +59,21 @@ public:
 	}
 
 	template<class T>
-	static std::shared_ptr<T> makeBuffer(size_t elemCnt, const uint8_t* data = nulltpr) {
+	static std::shared_ptr<T> makeBuffer(size_t elemCnt, const uint8_t* data = nullptr) {
 		if (elemCnt == 0) {
 			return nullptr;
 		}
-		​​//当 data != nullptr 时​​：表示内存由外部管理，shared_ptr 仅托管指针，不负责释放。
+		/* 当data != nullptr时：内存由外部管理，shared_ptr不负责释放 */
 		if (data != nullptr) {
 			return std::shared_ptr<T>((T*)data, [](const T* ptr) {});
 		}
 		else {
 			//return std::make_shared<T>() 无法用make_shared
-			return std::shader_ptr<T>(new T[elemCnt], [](const T* ptr) {delete[] ptr};);
+			return std::shared_ptr<T>(new T[elemCnt], [](const T* ptr) {delete[] ptr; });
 		}
 	}
 };
+
 }
 
 #endif

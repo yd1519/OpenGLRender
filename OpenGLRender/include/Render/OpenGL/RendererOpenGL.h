@@ -41,7 +41,6 @@ public:
 	void endRenderPass() override;
 	void waitIdle() override;
 
-
 private:
 	VertexArrayObjectOpenGL* vao_ = nullptr;
 	ShaderProgramOpenGL* shaderProgram_ = nullptr;

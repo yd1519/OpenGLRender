@@ -1,8 +1,8 @@
-#include "GLSLUtils.h"
+#include "Render/OpenGL/GLSLUtils.h"
 #include <vector>
 #include <regex>
-#include "FileUtils.h"
-#include "OpenGLUtils.h"
+#include "Base/FileUtils.h"
+#include "Render/OpenGL/OpenGLUtils.h"
 
 namespace OpenGL {
 
