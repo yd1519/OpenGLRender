@@ -44,40 +44,41 @@ struct ShaderBuiltin {
     DerivativeContext dfCtx;
 };
 
+// 软件渲染着色器抽象基类
 class ShaderSoft {
 public:
     virtual void shaderMain() = 0;                      //着色器入口函数（类似GLSL的main）
-
+    /*---------------------------------------资源绑定接口----------------------------------------*/
     virtual void bindDefines(void* ptr) = 0;            //绑定预处理宏
     virtual void bindBuiltin(void* ptr) = 0;            //绑定内置变量
     virtual void bindShaderAttributes(void* ptr) = 0;   //绑定顶点属性
     virtual void bindShaderUniforms(void* ptr) = 0;     //绑定uniform变量
     virtual void bindShaderVaryings(void* ptr) = 0;     //绑定varying变量
-
+    /*------------------------------------------资源信息查询接口-----------------------------------*/
     virtual size_t getShaderUniformsSize() = 0;         //获取uniform缓冲区大小
     virtual size_t getShaderVaryingsSize() = 0;         //获取varying数据大小
 
     virtual std::vector<std::string>& getDefines() = 0; //获取预处理宏列表
-    virtual std::vector<UniformDesc>& getUniformsDesc() = 0;//获取uniform描述符
+    virtual std::vector<UniformDesc>& getUniformsDesc() = 0;//获取uniform描述符 ，uniform所在vector中的位置就是在着色器程序中的位置
 
-    virtual std::shared_ptr<ShaderSoft> clone() = 0;    //克隆接口（原型模式）
+    virtual std::shared_ptr<ShaderSoft> clone() = 0;    //克隆接口（原型模式）用于创建着色器副本
 
 public:
+    // 获取2D纹理尺寸
     static inline glm::ivec2 textureSize(Sampler2DSoft<RGBA>* sampler, int lod) {
-        auto& buffer = sampler->getTexture()->getImage().getBuffer(lod);
+        auto& buffer = sampler->getTexture()->getImage().getBuffer(lod); //buffer：shared_ptr<ImageBufferSoft<T>>
         return { buffer->width, buffer->height };
     }
-
     static inline glm::ivec2 textureSize(Sampler2DSoft<float>* sampler, int lod) {
         auto& buffer = sampler->getTexture()->getImage().getBuffer(lod);
         return { buffer->width, buffer->height };
     }
 
+    // 2D纹理采样（自动计算LOD）
     static inline glm::vec4 texture(Sampler2DSoft<RGBA>* sampler, glm::vec2 coord) {
         glm::vec4 ret = sampler->texture2D(coord);
         return ret / 255.f;
     }
-
     static inline float texture(Sampler2DSoft<float>* sampler, glm::vec2 coord) {
         float ret = sampler->texture2D(coord);
         return ret;
@@ -87,7 +88,7 @@ public:
         glm::vec4 ret = sampler->textureCube(coord);
         return ret / 255.f;
     }
-
+            
     static inline glm::vec4 textureLod(Sampler2DSoft<RGBA>* sampler, glm::vec2 coord, float lod = 0.f) {
         glm::vec4 ret = sampler->texture2DLod(coord, lod);
         return ret / 255.f;
@@ -119,16 +120,18 @@ public:
         auto* coord2 = (glm::vec2*)(dfCtx.p2 + dfOffset);
         auto* coord3 = (glm::vec2*)(dfCtx.p3 + dfOffset);
 
-        // 计算纹理坐标导数（屏幕空间）
+        // 计算导数并转换到纹理空间
         glm::vec2 texSize = glm::vec2(sampler->width(), sampler->height());
         glm::vec2 dx = glm::vec2(*coord1 - *coord0);
         glm::vec2 dy = glm::vec2(*coord2 - *coord0);
         dx *= texSize;
         dy *= texSize;
+        // 使用最大边长确定LOD（公式来源：OpenGL标准）
         float d = glm::max(glm::dot(dx, dx), glm::dot(dy, dy));
-        return glm::max(0.5f * glm::log2(d), 0.0f);
+        return glm::max(0.5f * glm::log2(d), 0.0f); // 0.5f是因为d之前平方了。
     }
 
+    // 准备执行主函数，绑定LOD计算方法
     virtual void prepareExecMain() {
         texLodFunc = std::bind(&ShaderSoft::getSampler2DLod, this, std::placeholders::_1);
     }
@@ -137,8 +140,10 @@ public:
         return 0;
     }
 
+    //-----------------------------uniform管理-----------------------------------------
     virtual void setupSamplerDerivative() {}
 
+    // 获取Uniform变量位置
     int getUniformLocation(const std::string& name) {
         auto& desc = getUniformsDesc();
         for (int i = 0; i < desc.size(); i++) {
@@ -149,6 +154,7 @@ public:
         return -1;
     };
 
+    // 获取Uniform变量在缓冲区中的偏移量，loc 由getUniformLocation获取的位置索引
     int GetUniformOffset(int loc) {
         auto& desc = getUniformsDesc();
         if (loc < 0 || loc > desc.size()) {
@@ -158,7 +164,7 @@ public:
     };
 };
 
-
+// 自动生成接口实现
 #define CREATE_SHADER_OVERRIDE                          \
     ShaderDefines *def = nullptr;                         \
     ShaderAttributes *a = nullptr;                        \

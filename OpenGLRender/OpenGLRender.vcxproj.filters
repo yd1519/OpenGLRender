@@ -162,6 +162,24 @@
     <ClInclude Include="include\Render\Software\SamplerSoft.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\Render\Software\RendererInternal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\Software\FramebufferSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\Software\DepthSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\Software\BlendSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render\Software\RendererSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Base\SIMD.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GLSLUtils.cpp">
@@ -231,6 +249,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RendererSoft.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

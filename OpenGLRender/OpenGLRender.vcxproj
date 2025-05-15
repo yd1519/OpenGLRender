@@ -160,12 +160,18 @@
     <ClInclude Include="include\Base\Buffer.h" />
     <ClInclude Include="include\Base\hashUtils.h" />
     <ClInclude Include="include\Base\Platform.h" />
+    <ClInclude Include="include\Base\SIMD.h" />
     <ClInclude Include="include\Render\OpenGL\FrameBufferOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\RendererOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\ShaderProgramOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\UniformOpenGL.h" />
     <ClInclude Include="include\Render\OpenGL\VertexOpenGL.h" />
     <ClInclude Include="include\Render\PipelineStates.h" />
+    <ClInclude Include="include\Render\Software\BlendSoft.h" />
+    <ClInclude Include="include\Render\Software\DepthSoft.h" />
+    <ClInclude Include="include\Render\Software\FramebufferSoft.h" />
+    <ClInclude Include="include\Render\Software\RendererInternal.h" />
+    <ClInclude Include="include\Render\Software\RendererSoft.h" />
     <ClInclude Include="include\Render\Software\SamplerSoft.h" />
     <ClInclude Include="include\Render\Software\ShaderProgramSoft.h" />
     <ClInclude Include="include\Render\Software\ShaderSoft.h" />
@@ -232,6 +238,7 @@
     <ClCompile Include="src\QuadFilter.cpp" />
     <ClCompile Include="src\RenderDebug.cpp" />
     <ClCompile Include="src\RendererOpenGL.cpp" />
+    <ClCompile Include="src\RendererSoft.cpp" />
     <ClCompile Include="src\Viewer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
