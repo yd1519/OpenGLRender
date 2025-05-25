@@ -8,7 +8,7 @@
 namespace OpenGL {
 
 const std::string ASSETS_DIR = "../assets/";
-const std::string SHADER_GLSL_DIR = "./GLSL/";
+const std::string SHADER_GLSL_DIR = "./include/Viewer/Shader/GLSL/";
 
 //抗锯齿方法
 enum AAType {

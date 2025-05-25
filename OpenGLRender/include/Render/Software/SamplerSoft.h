@@ -472,9 +472,6 @@ private:
     BaseSamplerCube<T> sampler_;
     TextureSoft<T>* tex_ = nullptr;
 };
-
-
-
 }
 
 #endif

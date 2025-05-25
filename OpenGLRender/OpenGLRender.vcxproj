@@ -146,7 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\OpenGLRender\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\OpenGLRender\include;F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\Include\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -208,6 +208,14 @@
     <ClInclude Include="include\Render\Vertex.h" />
     <ClInclude Include="include\Viewer\QuadFilter.h" />
     <ClInclude Include="include\Viewer\RenderDebug.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\BasicSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\BlinnPhongSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\FxaaSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\IBLIrradianceSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\IBLPrefilterSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\PbrSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\ShaderSoft.h" />
+    <ClInclude Include="include\Viewer\Shader\Software\SkyboxSoft.h" />
     <ClInclude Include="include\Viewer\Viewer.h" />
     <ClInclude Include="include\Viewer\ViewerManager.h" />
     <ClInclude Include="include\Viewer\ViewerOpenGL.h" />
@@ -240,6 +248,22 @@
     <ClCompile Include="src\RendererOpenGL.cpp" />
     <ClCompile Include="src\RendererSoft.cpp" />
     <ClCompile Include="src\Viewer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Viewer\Shader\GLSL\BasicGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\BasicGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\BlinnPhongGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\BlinnPhongGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\FxaaGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\FxaaGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\IBLIrradianceGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\IBLIrradianceGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\IBLPrefilterGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\IBLPrefilterGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\PbrGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\PbrGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\SkyboxGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\SkyboxGLSL.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

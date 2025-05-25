@@ -12,7 +12,6 @@
 #include <assimp/GltfMaterial.h>
 #include <iostream>
 
-
 namespace OpenGL {
 	ModelLoader::ModelLoader(Config& config) : config_(config) {
 		loadWorldAxis();
@@ -348,7 +347,7 @@ namespace OpenGL {
 			//----------------处理着色模型-----------------------
 			outMesh.material->shadingModel = Shading_BlinnPhong;
 			aiShadingMode shading_mode;
-			if (material->Get(AI_MATKEY_SHADING_MODEL, shading_mode), aiReturn_SUCCESS) {
+			if (material->Get(AI_MATKEY_SHADING_MODEL, shading_mode) == aiReturn_SUCCESS) {
 				if (aiShadingMode_PBR_BRDF == shading_mode) {
 					outMesh.material->shadingModel = Shading_PBR;
 				}
@@ -430,9 +429,7 @@ namespace OpenGL {
 			else {
 				LOGE("load texture failed: %s, path: %s", Material::materialTexTypeStr(texType), absolutePath.c_str());
 			}
-		}
-
-		
+		}	
 	}
 
 	void ModelLoader::preloadTextureFiles(const aiScene* scene, const std::string& resDir) {

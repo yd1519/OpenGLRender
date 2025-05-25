@@ -86,6 +86,7 @@ public:
 				break;
 		}
 	}
+
 private:
 	GLuint fbo_in_ = 0;
 	GLuint fbo_out_ = 0;

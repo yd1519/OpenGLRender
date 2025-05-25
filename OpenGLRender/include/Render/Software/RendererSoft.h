@@ -113,7 +113,7 @@ private:
 	std::shared_ptr<ImageBufferSoft<float>> fboDepth_ = nullptr;
 	//--------------------------- 临时数据存储-------------------------------
 	std::vector<VertexHolder> vertexes_; // 处理中的顶点
-	std::vector<PrimitiveHolder> primitives_; // 处理中的图元
+	std::vector<PrimitiveHolder> primitives_; // 处理中的图元，其中包含顶点索引
 	//----------------------------着色器变量存储----------------------------------
 	std::shared_ptr<float> varyings_ = nullptr;// 顶点着色器输出变量
 	size_t varyingsCnt_ = 0;

@@ -180,6 +180,30 @@
     <ClInclude Include="include\Base\SIMD.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\ShaderSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\BasicSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\BlinnPhongSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\PbrSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\SkyboxSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\FxaaSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\IBLIrradianceSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Viewer\Shader\Software\IBLPrefilterSoft.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GLSLUtils.cpp">
@@ -254,5 +278,21 @@
     <ClCompile Include="src\RendererSoft.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Viewer\Shader\GLSL\BasicGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\BasicGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\BlinnPhongGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\BlinnPhongGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\FxaaGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\FxaaGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\IBLIrradianceGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\IBLIrradianceGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\IBLPrefilterGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\IBLPrefilterGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\PbrGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\PbrGLSL.vert" />
+    <None Include="include\Viewer\Shader\GLSL\SkyboxGLSL.frag" />
+    <None Include="include\Viewer\Shader\GLSL\SkyboxGLSL.vert" />
   </ItemGroup>
 </Project>

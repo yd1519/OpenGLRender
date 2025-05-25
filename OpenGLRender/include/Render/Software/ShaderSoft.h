@@ -27,6 +27,7 @@ struct DerivativeContext {
     float* p3 = nullptr;
 };
 
+// 着色器内置变量
 struct ShaderBuiltin {
     // ----------顶点着色器输出----------
     glm::vec4 Position = glm::vec4{ 0.f };

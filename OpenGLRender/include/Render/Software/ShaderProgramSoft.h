@@ -4,7 +4,7 @@
 #include <vector>
 #include "Base/UUID.h"
 #include "Render/ShaderProgram.h"
-#include "ShaderSoft.h"
+#include "Render/Software/ShaderSoft.h"
 
 
 namespace OpenGL {

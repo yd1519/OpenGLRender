@@ -71,7 +71,7 @@ public:
 			return modelLoader_->loadSkybox(path);
 		});
 
-		configPanel_->setFrameDumpFunc([&]() -> void {dumpFrame_ = true; });// 设置截图标志位
+		configPanel_->setFrameDumpFunc([&]() -> void {dumpFrame_ = true; });// renderdoc
 
 		configPanel_->setUpdateLightFunc([&](glm::vec3& position, glm::vec3& color) -> void {
 			auto& scene = modelLoader_->getScene();
@@ -95,14 +95,14 @@ public:
 		}
 		viewer->configRenderer(); // 将camera和cameradepth的reverse_z设置为false；
 		if (dumpFrame_) {// 帧捕获模式开启
-			RenderDebugger::startFrameCapture(viewer->getDevicePointer()); // 开始捕获GPU指令
+			RenderDebugger::startFrameCapture(viewer->getDevicePointer(window_)); // 开始捕获GPU指令
 		}
 
 		viewer->drawFrame(modelLoader_->getScene());
 		//结束帧捕获
 		if (dumpFrame_) {
 			dumpFrame_ = false;
-			RenderDebugger::endFrameCapture(viewer->getDevicePointer());// 结束捕获并保存数据
+			RenderDebugger::endFrameCapture(viewer->getDevicePointer(window_));// 结束捕获并保存数据
 		}
 
 		return viewer->swapBuffer();
@@ -153,6 +153,19 @@ public:
 	inline bool wantCaptureMouse() {
 		return configPanel_->wantCaptureMouse();
 	}
+
+	inline void updateGestureZoom(double yoffset) {
+		camera_->ProcessMouseScroll(static_cast<float>(yoffset));
+	}
+
+	inline void updateGestureRotate(float xoffset, float yoffset) {
+		camera_->ProcessMouseMovement(xoffset, yoffset);
+	}
+
+	inline void processKeyboard(Camera_Movement move, float deltaTime) {
+		camera_->ProcessKeyboard(move, deltaTime);
+	}
+
 private:
 	void* window_ = nullptr;
 	int width_ = 0;

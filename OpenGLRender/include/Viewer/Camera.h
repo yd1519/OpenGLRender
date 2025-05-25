@@ -78,6 +78,21 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
 
+    //实际上是从投影空间转化到世界空间
+    glm::vec3 getWorldPositionFromView(glm::vec3 pos) const {
+        glm::mat4 proj, view, projInv, viewInv;
+        proj = projectionMatrix();
+        view = viewMatrix();
+
+        projInv = glm::inverse(proj);
+        viewInv = glm::inverse(view);
+
+        glm::vec4 pos_world = viewInv * projInv * glm::vec4(pos, 1);
+        pos_world /= pos_world.w;
+
+        return glm::vec3{ pos_world };
+    }
+
     //
     glm::mat4 projectionMatrix() const {
         float tanHalfFovInverse = 1.f / std::tan((fov_ * 0.5f));

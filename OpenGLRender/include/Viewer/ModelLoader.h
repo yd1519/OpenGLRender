@@ -79,7 +79,7 @@ private:
 	//避免重复加载
 	/*key:model文件绝对路径*/
 	std::unordered_map<std::string, std::shared_ptr<Model>> modelCache_;
-	/*key：纹理文件绝对路径*/
+	/*key：纹理文件路径*/
 	std::unordered_map<std::string, std::shared_ptr<Buffer<RGBA>>> textureDataCache_;//存储原始数据
 	//key: 纹理文件路径
 	std::unordered_map<std::string, std::shared_ptr<SkyboxMaterial>> skyboxMaterialCache_;

@@ -15,17 +15,17 @@ struct Viewport {
     float maxDepth;
 
     // ref: https://registry.khronos.org/vulkan/specs/1.0/html/chap24.html#vertexpostproc-viewport
-    glm::vec4 innerO; // 视口变换偏移量
-    glm::vec4 innerP; // 视口变换比例
+    glm::vec4 innerO; // 视口变换偏移量，innerO = glm::vec4(viewportWidth/2, viewportHeight/2, 0.5, 0.0);
+    glm::vec4 innerP; // 视口变换比例，innerP = glm::vec4(viewportWidth/2, viewportHeight/2, 0.5, 1.0);
 
     float absMinDepth; //用于裁剪
     float absMaxDepth;
 };
 
-// 顶点数据容器
+// 顶点数据容器，用于着色过程存储临时数据
 struct VertexHolder {
     bool discard = false;
-    size_t index = 0;
+    size_t index = 0; // 在顶点数组中的下标
 
     void* vertex = nullptr;
     float* varyings = nullptr;
@@ -130,14 +130,14 @@ public:
 
 public:
     bool inside = false;
-    float* varyingsFrag = nullptr; // 片段着色器输入varyings
+    float* varyingsFrag = nullptr; // 纹理坐标、法线向量、.....
     std::vector<SampleContext> samples; // 采样点
     SampleContext* sampleShading = nullptr; // 当前用于着色的采样点
     int sampleCount = 0; // 采样数(1 / 4)
     int coverage = 0; // 覆盖率(有效采样点数)
 };
 
-// 2x2像素块上下文(用于导数计算)
+// 2x2像素块上下文
 class PixelQuadContext {
 public:
     // 设置varying数据大小(按需分配内存), size :每个像素的varying数据量
@@ -175,15 +175,15 @@ public:
     PixelContext pixels[4];
 
     // triangle vertex screen space position
-    glm::aligned_vec4 vertPos[3]; // 原始顶点位置
-    glm::aligned_vec4 vertPosFlat[4]; // 展平后的位置(用于导数计算)
+    glm::aligned_vec4 vertPos[3]; // 三角形原始顶点位置
+    glm::aligned_vec4 vertPosFlat[4]; // 展平后的位置， 便于SIMD计算  x0,x1,x2,0; y0,y1,....
 
     // 深度校正相关
-    const float* vertZ[3] = { nullptr, nullptr, nullptr }; // 顶点深度值指针
+    const float* vertZ[3] = { nullptr, nullptr, nullptr }; // 顶点深度值指针，可以用于插值
     glm::aligned_vec4 vertW = glm::aligned_vec4(0.f, 0.f, 0.f, 1.f); // W分量
 
     // triangle vertex shader varyings
-    const float* vertVaryings[3] = { nullptr, nullptr, nullptr }; //顶点varyings
+    const float* vertVaryings[3] = { nullptr, nullptr, nullptr }; // 顶点变量数据
 
     // triangle Facing
     bool frontFacing = true;

@@ -9,7 +9,7 @@ namespace OpenGL {
 
 #define CREATE_UNIFORM_BLOCK(name) renderer_->createUniformBlock(#name, sizeof(name))
 
-// camera, renderer, uniformblock, shadowplacehold, iblplacehold
+// camera, renderer, uniform, shadowplacehold, iblplacehold
 bool Viewer::create(int width, int height, int outTexId) {
 
 	cleanup();
@@ -30,7 +30,7 @@ bool Viewer::create(int width, int height, int outTexId) {
 
 	//-------------------渲染器初始化------------------
 	if (!renderer_) {
-		renderer_ = createRenderer();// 子类函数
+		renderer_ = createRenderer();	// 子类函数
 	}
 	if (!renderer_) {// 检查渲染器是否创建成功
 		LOGE("Viewer::create failed: createRenderer error");
@@ -100,10 +100,10 @@ void Viewer::drawFrame(DemoScene& scene) {
 
 	// setup framebuffer
 	setupMainBuffers();// 主渲染帧缓冲（颜色+深度），会设置texColorMain_和texDepthMain_的值，同时绑定到fboMain_中。
-	setupShadowMapBuffers();// 阴影贴图帧缓冲
+	setupShadowMapBuffers();// 创建阴影贴图帧缓冲，同时将texDepthShadow_设置到fboShadow_中
 
 	// init skybox textures & ibl
-	initSkyboxIBL();// 天空盒纹理与基于图像的照明（IBL）
+	initSkyboxIBL();
 
 	// setup model materials
 	setupScene();// 场景材质与模型数据
@@ -776,7 +776,7 @@ bool Viewer::initSkyboxIBL() {
 
 	// 等距柱状图转立方体贴图处理
 	auto texCubeIt = skybox.material->textures.find(MaterialTexType_CUBE);
-	if (texCubeIt == skybox.material->textures.end()) {
+	if (texCubeIt == skybox.material->textures.end()) { // 如果没有立方体贴图则说明是等距柱状贴图
 		// 查找等距柱状图纹理
 		auto texEqIt = skybox.material->textures.find(MaterialTexType_EQUIRECTANGULAR);
 		if (texEqIt != skybox.material->textures.end()) {
@@ -905,7 +905,7 @@ std::shared_ptr<Texture> Viewer::createTexture2DDefault(int width, int height, T
 	sampler.filterMag = Filter_LINEAR;
 	texture2d->setSamplerDesc(sampler);
 
-	texture2d->initImageData();
+	texture2d->initImageData(); //分配存储空间
 	return texture2d;
 }
 

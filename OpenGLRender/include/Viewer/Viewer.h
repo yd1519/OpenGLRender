@@ -25,7 +25,7 @@ public:
     void resetReverseZ();
 
     // used by RenderDoc to capture frames
-    virtual void* getDevicePointer() { return nullptr; }
+    virtual void* getDevicePointer(void* window) { return nullptr; }
 
 protected:
     virtual std::shared_ptr<Renderer> createRenderer() = 0;
