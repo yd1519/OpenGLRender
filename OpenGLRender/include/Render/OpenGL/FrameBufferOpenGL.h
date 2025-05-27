@@ -7,7 +7,7 @@ namespace OpenGL {
 class FrameBufferOpenGL : public FrameBuffer {
 public:
 	explicit FrameBufferOpenGL(bool offscreen) : FrameBuffer(offscreen) {
-		GL_CHECK(glGenBuffers(1, &fbo_));
+		GL_CHECK(glGenFramebuffers(1, &fbo_));
 	}
 
 	~FrameBufferOpenGL() {

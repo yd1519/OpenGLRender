@@ -12,7 +12,7 @@ namespace OpenGL {
 class QuadFilter {
 public:
 	QuadFilter(int width, int height, const std::shared_ptr<Renderer>& renderer,
-		const std::function<bool(ShaderProgram& program)>& shaderFunc);
+			   const std::function<bool(ShaderProgram& program)>& shaderFunc);
 
 	void setTextures(std::shared_ptr<Texture>& texIn, std::shared_ptr<Texture>& texOut);
 
