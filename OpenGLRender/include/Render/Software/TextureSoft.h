@@ -104,7 +104,7 @@ public:
         images_.resize(layerCount_);
     }
 
-    int getId() override  {
+    int getId() const override  {
         return uuid_.get();
     }
 

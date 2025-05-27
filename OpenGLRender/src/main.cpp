@@ -13,25 +13,15 @@ std::shared_ptr<OpenGL::ViewerManager> viewer = nullptr;
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 800;
 
-// 用于camera
 double lastX = SCR_WIDTH / 2.0f;
 double lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-// timing
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
-void processInput(GLFWwindow* window);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-void mouseCallback(GLFWwindow* window, double xposIn, double yposIn);
+void mouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+void processInput(GLFWwindow* window);
 
-static void glfwErrorCallback(int error, const char* description) {
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
-
-/*-------------------------------------------------------------------------------*/
 const char* VS = R"(
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
@@ -56,24 +46,27 @@ void main()
     FragColor = texture(uTexture, TexCoord);
 }
 )";
-/*----------------------------------------------------------------------------------*/
+
+static void glfwErrorCallback(int error, const char* description) {
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+}
 
 int main() {
-    /* 初始化库 */
+    /* Initialize the library */
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit()) {
         LOGE("Failed to initialize GLFW");
         return -1;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    /* 创建窗口 */
+    /* create a windowed mode window and its OpenGL context */
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SoftGLRenderer", nullptr, nullptr);
     if (!window) {
         LOGE("Failed to create GLFW window");
@@ -88,7 +81,7 @@ int main() {
     glfwSetScrollCallback(window, scrollCallback);
 
     // tell GLFW to capture our mouse
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  //    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* Load all OpenGL function pointers */
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -207,36 +200,27 @@ int main() {
     glfwDestroyWindow(window);
     glfwTerminate();
 
-	return 0;
+    return 0;
 }
 
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window) {
     if (!viewer || viewer->wantCaptureKeyboard()) {
         return;
     }
 
-    // ESC键处理
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
         return;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        viewer->processKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        viewer->processKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        viewer->processKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        viewer->processKeyboard(RIGHT, deltaTime);
-
-    // H键处理
     static bool keyPressed_H = false;
     int state = glfwGetKey(window, GLFW_KEY_H);
     if (state == GLFW_PRESS) {
         if (!keyPressed_H) {
             keyPressed_H = true;
-            viewer->togglePanelState();// 切换UI面板显示状态
+            viewer->togglePanelState();
         }
     }
     else if (state == GLFW_RELEASE) {
@@ -244,6 +228,8 @@ void processInput(GLFWwindow* window) {
     }
 }
 
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
@@ -255,40 +241,45 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     viewer->updateSize(width, height);
 }
 
-void mouseCallback(GLFWwindow* window, double xposIn, double yposIn)
-{
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouseCallback(GLFWwindow* window, double xPos, double yPos) {
     if (!viewer || viewer->wantCaptureMouse()) {
         return;
     }
 
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        float xpos = static_cast<float>(xposIn);
-        float ypos = static_cast<float>(yposIn);
-
-        if (firstMouse)
-        {
-            lastX = xpos;
-            lastY = ypos;
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        if (firstMouse) {
+            lastX = xPos;
+            lastY = yPos;
             firstMouse = false;
         }
 
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+        double xOffset = xPos - lastX;
+        double yOffset = yPos - lastY;
 
-        lastX = xpos;
-        lastY = ypos;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            viewer->updateGesturePan((float)xOffset, (float)yOffset);
+        }
+        else {
+            viewer->updateGestureRotate((float)xOffset, (float)yOffset);
+        }
 
-        viewer->updateGestureRotate(xoffset, yoffset);
+        lastX = xPos;
+        lastY = yPos;
     }
     else {
         firstMouse = true;
     }
-    
 }
 
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
 void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
-	if (!viewer || viewer->wantCaptureMouse()) {
-		return;
-	}
-	viewer->updateGestureZoom(yOffset);
+    if (!viewer || viewer->wantCaptureMouse()) {
+        return;
+    }
+
+    viewer->updateGestureZoom((float)xOffset, (float)yOffset);
 }

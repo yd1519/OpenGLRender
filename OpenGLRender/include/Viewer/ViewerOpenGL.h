@@ -5,11 +5,11 @@
 #include "Viewer/Viewer.h"
 #include "Render/OpenGL/OpenGLUtils.h"
 #include "Render/OpenGL/RendererOpenGL.h"
+#include "Render/OpenGL/ShaderProgramOpenGL.h"
 #include "Viewer/Config.h"
 
 
 namespace OpenGL {
-
 
 #define	CASE_CREATE_SHADER_GL(shading, source) case shading : \
 	return programGL->compileAndLinkFile(SHADER_GLSL_DIR + #source + ".vert", \
@@ -66,9 +66,7 @@ public:
 		if (renderer->create()) {
 			return renderer;
 		}
-		else {
-			return nullptr;
-		}
+		return nullptr;
 	}
 
 	// 加载对应着色器模型的着色器文件
@@ -85,18 +83,14 @@ public:
 			default:
 				break;
 		}
+
+		return false;
 	}
 
 private:
 	GLuint fbo_in_ = 0;
 	GLuint fbo_out_ = 0;
 };
-
-
-
-
-
-
 
 }
 #endif

@@ -4,7 +4,7 @@
 namespace OpenGL {
 
 QuadFilter::QuadFilter(int width, int height, const std::shared_ptr<Renderer>& renderer,
-    const std::function<bool(ShaderProgram& program)>& shaderFunc) {
+                       const std::function<bool(ShaderProgram& program)>& shaderFunc) {
     if (!renderer) {
         LOGE("QuadFilter error: renderer nullptr");
         return;

@@ -47,7 +47,6 @@ private:
 	PipelineStates* pipelineStates_ = nullptr;
 };
 
-
 }
 
 #endif

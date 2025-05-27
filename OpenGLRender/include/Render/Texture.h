@@ -93,7 +93,7 @@ public:
 		return std::max(1, height >> level);
 	}
 
-	virtual int getId() = 0;
+	virtual int getId() const = 0;
 
 	virtual void setSamplerDesc(SamplerDesc& sampler) {};
 	virtual void initImageData() {};

@@ -20,6 +20,8 @@ void RenderDebugger::startFrameCapture(RENDERDOC_DevicePointer device) {
 
     if (rdoc_) {
         rdoc_->StartFrameCapture(device, nullptr);
+        const char* capturePath = rdoc_->GetCaptureFilePathTemplate();
+        printf("Capture path: %s\n", capturePath);
     }
 }
 

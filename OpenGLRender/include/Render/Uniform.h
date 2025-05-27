@@ -16,7 +16,7 @@ class ShaderProgram;
 
 class Uniform {
 public:
-	explicit Uniform(const std::string& name) : name_(name) {}
+	explicit Uniform(const std::string name) : name_(name) {}
 
 	//返回是第几个uniform，包括uniformblock和uniformsampler
 	inline int getHash() const {

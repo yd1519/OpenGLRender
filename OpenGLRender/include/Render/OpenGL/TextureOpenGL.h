@@ -22,26 +22,25 @@ public:
 		TextureOpenGLDesc ret{};
 
 		switch (format) {
-		case TextureFormat_RGBA8: {
-			ret.internalformat = GL_RGBA;
-			ret.format = GL_RGBA;
-			ret.type = GL_UNSIGNED_BYTE;
-			break;
-		}
-		case TextureFormat_FLOAT32: {
-			ret.internalformat = GL_DEPTH_COMPONENT;
-			ret.format = GL_DEPTH_COMPONENT;
-			ret.type = GL_FLOAT;
-			break;
-		}
+			case TextureFormat_RGBA8: {
+				ret.internalformat = GL_RGBA;
+				ret.format = GL_RGBA;
+				ret.type = GL_UNSIGNED_BYTE;
+				break;
+			}
+			case TextureFormat_FLOAT32: {
+				ret.internalformat = GL_DEPTH_COMPONENT;
+				ret.format = GL_DEPTH_COMPONENT;
+				ret.type = GL_FLOAT;
+				break;
+			}
 		}
 
 		return ret;
 	}
 
-	virtual ~TextureOpenGL() = default;
 
-	int getId() {
+	int getId() const override {
 		return static_cast<int>(texId_);
 	}
 
@@ -145,7 +144,7 @@ public:
 
 		GL_CHECK(glBindTexture(target_, texId_));
 		GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type,
-			buffers[0]->getRawDataPtr()));
+							  buffers[0]->getRawDataPtr()));
 
 		if (useMipmaps) {
 			GL_CHECK(glGenerateMipmap(target_));
@@ -160,9 +159,12 @@ public:
 		}
 		else {
 			GL_CHECK(glTexImage2D(target_, 0, glDesc_.internalformat, width, height, 0, glDesc_.format, glDesc_.type, nullptr));
+			
+			if (useMipmaps) {
+				GL_CHECK(glGenerateMipmap(target_));
+			}
 		}
 	}
-
 };
 
 class TextureCubeOpenGL : public TextureOpenGL {
@@ -196,9 +198,9 @@ public:
 		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_T, OpenGL::cvtWrap(sampler.wrapT)));
 		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_WRAP_R, OpenGL::cvtWrap(sampler.wrapR)));
 		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MIN_FILTER,
-			OpenGL::cvtFilter(sampler.filterMin)));
+								 OpenGL::cvtFilter(sampler.filterMin)));
 		GL_CHECK(glTexParameteri(target_, GL_TEXTURE_MAG_FILTER,
-			OpenGL::cvtFilter(sampler.filterMag)));
+								 OpenGL::cvtFilter(sampler.filterMag)));
 
 		glm::vec4 borderColor = OpenGL::cvtBorderColor(sampler.borderColor);
 		GL_CHECK(glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, &borderColor[0]));
@@ -222,7 +224,7 @@ public:
 		GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
 		for (int i = 0; i < 6; i++) {
 			GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
-				glDesc_.format, glDesc_.type, buffers[i]->getRawDataPtr()));
+								  glDesc_.format, glDesc_.type, buffers[i]->getRawDataPtr()));
 		}
 		if (useMipmaps) {
 			GL_CHECK(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
@@ -234,7 +236,7 @@ public:
 		GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, texId_));
 		for (int i = 0; i < 6; i++) {
 			GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glDesc_.internalformat, width, height, 0,
-				glDesc_.format, glDesc_.type, nullptr));
+								  glDesc_.format, glDesc_.type, nullptr));
 		}
 
 		if (useMipmaps) {

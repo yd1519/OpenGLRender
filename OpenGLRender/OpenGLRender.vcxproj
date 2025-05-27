@@ -84,6 +84,9 @@
     <IntDir>$(SolutionDir)./temp/$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
     <IncludePath>F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\Include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\Lib;$(LibraryPath)</LibraryPath>
+    <CopyLocalDeploymentContent>false</CopyLocalDeploymentContent>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
+    <CopyLocalProjectReference>true</CopyLocalProjectReference>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)./bin/$(Platform)\$(Configuration)\</OutDir>
@@ -129,6 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\OpenGLRender\include;F:\learning Files\computer graphics\OpenGLRender\OpenGLRender\Include\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -206,6 +210,7 @@
     <ClInclude Include="include\Render\Uniform.h" />
     <ClInclude Include="include\Base\UUID.h" />
     <ClInclude Include="include\Render\Vertex.h" />
+    <ClInclude Include="include\Viewer\OrbitController.h" />
     <ClInclude Include="include\Viewer\QuadFilter.h" />
     <ClInclude Include="include\Viewer\RenderDebug.h" />
     <ClInclude Include="include\Viewer\Shader\Software\BasicSoft.h" />
@@ -224,6 +229,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ConfigPanel.cpp" />
     <ClCompile Include="src\Environment.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -243,6 +249,7 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\md5.c" />
     <ClCompile Include="src\ModelLoader.cpp" />
+    <ClCompile Include="src\OrbitController.cpp" />
     <ClCompile Include="src\QuadFilter.cpp" />
     <ClCompile Include="src\RenderDebug.cpp" />
     <ClCompile Include="src\RendererOpenGL.cpp" />

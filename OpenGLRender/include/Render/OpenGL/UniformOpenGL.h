@@ -95,15 +95,15 @@ public:
 
 	void setTexture(const std::shared_ptr<Texture>& tex) {
 		switch (tex->type) {
-		case TextureType_2D:
-			texTarget_ = GL_TEXTURE_2D;
-			break;
-		case TextureType_CUBE:
-			texTarget_ = GL_TEXTURE_CUBE_MAP;
-			break;
-		default:
-			LOGE("UniformSampler::setTexture error: texture type not support");
-			break;
+			case TextureType_2D:
+				texTarget_ = GL_TEXTURE_2D;
+				break;
+			case TextureType_CUBE:
+				texTarget_ = GL_TEXTURE_CUBE_MAP;
+				break;
+			default:
+				LOGE("UniformSampler::setTexture error: texture type not support");
+				break;
 		}
 		texId_ = tex->getId();
 	}

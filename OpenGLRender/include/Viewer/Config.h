@@ -7,7 +7,7 @@
 
 namespace OpenGL {
 
-const std::string ASSETS_DIR = "../assets/";
+const std::string ASSETS_DIR = "./assets/";
 const std::string SHADER_GLSL_DIR = "./include/Viewer/Shader/GLSL/";
 
 //抗锯齿方法
@@ -47,7 +47,7 @@ public:
 	glm::vec3 pointLightColor = { 0.5f, 0.5f, 0.5f };
 
 	int aaType = AAType_NONE;
-	int rendererType = Renderer_OPENGL;
+	int rendererType = Renderer_SOFT;
 };
 
 }

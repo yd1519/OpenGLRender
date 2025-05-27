@@ -204,6 +204,9 @@
     <ClInclude Include="include\Viewer\Shader\Software\IBLPrefilterSoft.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\Viewer\OrbitController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GLSLUtils.cpp">
@@ -276,6 +279,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\RendererSoft.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrbitController.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

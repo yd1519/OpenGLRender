@@ -10,9 +10,9 @@ namespace OpenGL {
 const std::string IBL_TEX_CACHE_DIR = "./cache/IBL/";
 
 struct LookAtParam {
-    glm::vec3 Position;
-    glm::vec3 Front;
-    glm::vec3 Up;
+    glm::vec3 eye; // 相机位置
+    glm::vec3 center;
+    glm::vec3 up;
 };
 
 bool IBLGenerator::convertEquirectangular(const std::function<bool(ShaderProgram& program)>& shaderFunc,
@@ -25,9 +25,9 @@ bool IBLGenerator::convertEquirectangular(const std::function<bool(ShaderProgram
     contextCache_.push_back(std::make_shared<CubeRenderContext>());
     CubeRenderContext& ctx = *contextCache_.back();
     bool success = createCubeRenderContext(ctx,
-        shaderFunc,
-        std::dynamic_pointer_cast<Texture>(texIn),
-        MaterialTexType_EQUIRECTANGULAR);
+                                           shaderFunc,
+                                           std::dynamic_pointer_cast<Texture>(texIn),
+                                           MaterialTexType_EQUIRECTANGULAR);
     if (!success) {
         LOGE("create render context failed");
         return false;
@@ -39,8 +39,8 @@ bool IBLGenerator::convertEquirectangular(const std::function<bool(ShaderProgram
 }
 
 bool IBLGenerator::generateIrradianceMap(const std::function<bool(ShaderProgram& program)>& shaderFunc,
-    const std::shared_ptr<Texture>& texIn,
-    std::shared_ptr<Texture>& texOut) {
+                                         const std::shared_ptr<Texture>& texIn,
+                                         std::shared_ptr<Texture>& texOut) {
     texOut->tag = texIn->tag + ".irradianceMap";
     if (loadFromCache(texOut)) {
         return true;
@@ -48,9 +48,9 @@ bool IBLGenerator::generateIrradianceMap(const std::function<bool(ShaderProgram&
     contextCache_.push_back(std::make_shared<CubeRenderContext>());
     CubeRenderContext& ctx = *contextCache_.back();
     bool success = createCubeRenderContext(ctx,
-        shaderFunc,
-        std::dynamic_pointer_cast<Texture>(texIn),
-        MaterialTexType_CUBE);
+                                           shaderFunc,
+                                           std::dynamic_pointer_cast<Texture>(texIn),
+                                           MaterialTexType_CUBE);
     if (!success) {
         LOGE("create render context failed");
         return false;
@@ -62,8 +62,8 @@ bool IBLGenerator::generateIrradianceMap(const std::function<bool(ShaderProgram&
 }
 
 bool IBLGenerator::generatePrefilterMap(const std::function<bool(ShaderProgram& program)>& shaderFunc,
-    const std::shared_ptr<Texture>& texIn,
-    std::shared_ptr<Texture>& texOut) {
+                                        const std::shared_ptr<Texture>& texIn,
+                                        std::shared_ptr<Texture>& texOut) {
     texOut->tag = texIn->tag + ".prefilterMap";
     if (loadFromCache(texOut)) {
         return true;
@@ -71,9 +71,9 @@ bool IBLGenerator::generatePrefilterMap(const std::function<bool(ShaderProgram& 
     contextCache_.push_back(std::make_shared<CubeRenderContext>());
     CubeRenderContext& ctx = *contextCache_.back();
     bool success = createCubeRenderContext(ctx,
-        shaderFunc,
-        std::dynamic_pointer_cast<Texture>(texIn),
-        MaterialTexType_CUBE);
+                                           shaderFunc,
+                                           std::dynamic_pointer_cast<Texture>(texIn),
+                                           MaterialTexType_CUBE);
     if (!success) {
         LOGE("create render context failed");
         return false;
@@ -89,16 +89,16 @@ bool IBLGenerator::generatePrefilterMap(const std::function<bool(ShaderProgram& 
             uniformsPrefilter.u_srcResolution = (float)texIn->width;
             uniformsPrefilter.u_roughness = (float)level / (float)(kPrefilterMaxMipLevels - 1);
             uniformsBlockPrefilter->setData(&uniformsPrefilter, sizeof(UniformsIBLPrefilter));
-            });
+        });
     }
     storeToCache(texOut);
     return true;
 }
 
 bool IBLGenerator::createCubeRenderContext(CubeRenderContext& ctx,
-    const std::function<bool(ShaderProgram& program)>& shaderFunc,
-    const std::shared_ptr<Texture>& texIn,
-    MaterialTexType texType) {
+                                           const std::function<bool(ShaderProgram& program)>& shaderFunc,
+                                           const std::shared_ptr<Texture>& texIn,
+                                           MaterialTexType texType) {
     // camera
     ctx.camera.setPerspective(glm::radians(90.f), 1.f, 0.1f, 10.f);
 
@@ -159,7 +159,7 @@ void IBLGenerator::drawCubeFaces(CubeRenderContext& ctx, uint32_t width, uint32_
 
     for (int i = 0; i < 6; i++) {
         auto& param = captureViews[i];
-        ctx.camera.lookAt(param.Position, param.Front, param.Up);
+        ctx.camera.lookAt(param.eye, param.center, param.up);
 
         // 更新 mvp
         glm::mat4 viewMatrix = glm::mat3(ctx.camera.viewMatrix());  // only rotation

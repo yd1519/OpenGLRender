@@ -1,6 +1,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include <memory>
 #include "Render/Texture.h"
 #include "Render/OpenGL/EnumsOpenGL.h"
 

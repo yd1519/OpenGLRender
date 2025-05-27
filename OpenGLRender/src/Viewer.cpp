@@ -23,7 +23,7 @@ bool Viewer::create(int width, int height, int outTexId) {
 	// ------------------深度相机初始化-----------------
 	if (!cameraDepth_) {
 		cameraDepth_ = std::make_shared<Camera>();
-		cameraDepth_->setPerspective(glm::radians(ZOOM),
+		cameraDepth_->setPerspective(glm::radians(CAMERA_FOV),
 									 (float)SHADOW_MAP_WIDTH / (float)SHADOW_MAP_HEIGHT,
 									 CAMERA_NEAR, CAMERA_FAR);
 	}

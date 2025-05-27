@@ -9,6 +9,7 @@
 #include "Render/Renderer.h"
 
 namespace OpenGL {
+
 constexpr int kIrradianceMapSize = 32;
 constexpr int kPrefilterMaxMipLevels = 5;
 constexpr int kPrefilterMapSize = 128;

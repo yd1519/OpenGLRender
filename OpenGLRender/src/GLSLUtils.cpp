@@ -3,7 +3,7 @@
 #include <regex>
 #include "Base/FileUtils.h"
 #include "Render/OpenGL/OpenGLUtils.h"
-
+#include <iostream>
 namespace OpenGL {
 
 void ShaderGLSL::setHeader(const std::string& header) {
@@ -54,6 +54,9 @@ bool ShaderGLSL::loadFile(const std::string& path) {
     if (source.length() <= 0) {
         LOGE("read shader source failed");
         return false;
+    }
+    else {
+        std::cout << "read shader source success" << std::endl;
     }
 
     return loadSource(source);

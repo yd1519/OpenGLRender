@@ -1,7 +1,7 @@
 int main()
 {
-	int Failed = 0;
-	
-	return Failed;
+	int Error = 0;
+
+	return Error;
 }
 

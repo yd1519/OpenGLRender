@@ -46,7 +46,7 @@ public:
 		GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, fbo_));
 		GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER,
 										GL_COLOR_ATTACHMENT0,
-										color->type,
+										color->multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
 										color->getId(),
 										level));
 	}
@@ -60,7 +60,7 @@ public:
 		GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, fbo_));
 		GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER,
 										GL_COLOR_ATTACHMENT0,
-										cvtCubeFace(face),
+										OpenGL::cvtCubeFace(face),
 										color->getId(),
 										level));
 	}
@@ -74,7 +74,7 @@ public:
 		GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, fbo_));
 		GL_CHECK(glFramebufferTexture2D(GL_FRAMEBUFFER,
 										GL_DEPTH_ATTACHMENT,
-										depth->type,
+										depth->multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
 										depth->getId(),
 										0));
 	}

@@ -33,10 +33,10 @@ namespace OpenGL {
         static std::string compatibleFragmentPreprocess(const std::string& source); //对片段着色器源代码进行预处理（兼容性处理）。
 
     private:
-        GLenum type_;//Shader 的类型（GLenum），例如 GL_VERTEX_SHADER 或 GL_FRAGMENT_SHADER。
-        GLuint id_ = 0;//Shader 的 OpenGL 对象 ID。
-        std::string header_; //Shader 的头信息（如版本号和自定义头）
-        std::string defines_;//Shader 的宏定义
+        GLenum type_;
+        GLuint id_ = 0;
+        std::string header_; 
+        std::string defines_;
     };
 
 

@@ -1,6 +1,9 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <memory>
+#include <string>
+#include <unordered_map>
 #include "Render/Vertex.h"
 #include "Viewer/Material.h"
 #include "Base/Geometry.h"
@@ -87,7 +90,7 @@ struct Model {
 	size_t primitiveCnt = 0;
 	size_t vertexCnt = 0;
 
-	glm::mat4 centeredTransform;// 用于调整模型到特定大小，以及移动到指定位置
+	glm::mat4 centeredTransform;// 模型中心化校准
 
 	void resetStates() {
 		resetNodeStates(rootNode);
@@ -105,8 +108,8 @@ struct Model {
 
 struct DemoScene {
 	std::shared_ptr<Model> model;// 主模型（如角色）
-	ModelLines worldAxis;// 世界坐标系显示
-	ModelPoints pointLight;// 点光源可视化
+	ModelLines worldAxis;// 世界坐标系
+	ModelPoints pointLight;// 点光源
 	ModelMesh floor; // 地面网格
 	ModelMesh skybox;// 天空盒
 

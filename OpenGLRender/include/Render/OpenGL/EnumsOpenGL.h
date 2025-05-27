@@ -3,6 +3,7 @@
 
 #include "Render/RenderStates.h"
 #include "Render/Texture.h"
+
 namespace OpenGL {
 
 #define CASE_CVT_GL(PRE, TOKEN) case PRE##TOKEN: return GL_##TOKEN
@@ -13,8 +14,8 @@ static inline GLint cvtWrap(WrapMode mode) {
         CASE_CVT_GL(Wrap_, MIRRORED_REPEAT);
         CASE_CVT_GL(Wrap_, CLAMP_TO_EDGE);
         CASE_CVT_GL(Wrap_, CLAMP_TO_BORDER);
-    default:
-        break;
+        default:
+            break;
     }
     return GL_REPEAT;
 }
@@ -27,8 +28,8 @@ static inline GLint cvtFilter(FilterMode mode) {
         CASE_CVT_GL(Filter_, LINEAR_MIPMAP_NEAREST);
         CASE_CVT_GL(Filter_, NEAREST_MIPMAP_LINEAR);
         CASE_CVT_GL(Filter_, NEAREST_MIPMAP_NEAREST);
-    default:
-        break;
+        default:
+            break;
     }
     return GL_NEAREST;
 }
@@ -41,8 +42,8 @@ static inline GLint cvtCubeFace(CubeMapFace face) {
         CASE_CVT_GL(, TEXTURE_CUBE_MAP_NEGATIVE_Y);
         CASE_CVT_GL(, TEXTURE_CUBE_MAP_POSITIVE_Z);
         CASE_CVT_GL(, TEXTURE_CUBE_MAP_NEGATIVE_Z);
-    default:
-        break;
+        default:
+            break;
     }
     return 0;
 }
@@ -57,8 +58,8 @@ static inline GLint cvtDepthFunc(DepthFunction func) {
         CASE_CVT_GL(DepthFunc_, NOTEQUAL);
         CASE_CVT_GL(DepthFunc_, GEQUAL);
         CASE_CVT_GL(DepthFunc_, ALWAYS);
-    default:
-        break;
+        default:
+            break;
     }
     return 0;
 }
@@ -75,21 +76,21 @@ static inline GLint cvtBlendFactor(BlendFactor factor) {
         CASE_CVT_GL(BlendFactor_, ONE_MINUS_SRC_ALPHA);
         CASE_CVT_GL(BlendFactor_, ONE_MINUS_DST_COLOR);
         CASE_CVT_GL(BlendFactor_, ONE_MINUS_DST_ALPHA);
-    default:
-        break;
+        default:
+            break;
     }
     return 0;
 }
 
 static inline GLint cvtBlendFunction(BlendFunction func) {
     switch (func) {
-    case BlendFunc_ADD:               return GL_FUNC_ADD;
-    case BlendFunc_SUBTRACT:          return GL_FUNC_SUBTRACT;
-    case BlendFunc_REVERSE_SUBTRACT:  return GL_FUNC_REVERSE_SUBTRACT;
-    case BlendFunc_MIN:               return GL_MIN;
-    case BlendFunc_MAX:               return GL_MAX;
-    default:
-        break;
+        case BlendFunc_ADD:               return GL_FUNC_ADD;
+        case BlendFunc_SUBTRACT:          return GL_FUNC_SUBTRACT;
+        case BlendFunc_REVERSE_SUBTRACT:  return GL_FUNC_REVERSE_SUBTRACT;
+        case BlendFunc_MIN:               return GL_MIN;
+        case BlendFunc_MAX:               return GL_MAX;
+        default:
+            break;
     }
     return 0;
 }
@@ -99,29 +100,29 @@ static inline GLint cvtPolygonMode(PolygonMode mode) {
         CASE_CVT_GL(PolygonMode_, POINT);
         CASE_CVT_GL(PolygonMode_, LINE);
         CASE_CVT_GL(PolygonMode_, FILL);
-    default:
-        break;
+        default:
+            break;
     }
     return 0;
 }
 
 static inline GLint cvtDrawMode(PrimitiveType type) {
     switch (type) {
-    case Primitive_POINT:       return GL_POINTS;
-    case Primitive_LINE:        return GL_LINES;
-    case Primitive_TRIANGLE:    return GL_TRIANGLES;
-    default:
-        break;
+        case Primitive_POINT:       return GL_POINTS;
+        case Primitive_LINE:        return GL_LINES;
+        case Primitive_TRIANGLE:    return GL_TRIANGLES;
+        default:
+            break;
     }
     return 0;
 }
 
 static inline glm::vec4 cvtBorderColor(BorderColor color) {
     switch (color) {
-    case Border_BLACK:          return glm::vec4(0.f);
-    case Border_WHITE:          return glm::vec4(1.f);
-    default:
-        break;
+        case Border_BLACK:          return glm::vec4(0.f);
+        case Border_WHITE:          return glm::vec4(1.f);
+        default:
+            break;
     }
     return glm::vec4(0.f);
 }

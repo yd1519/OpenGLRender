@@ -15,8 +15,8 @@ const char* Material::shadingModelStr(ShadingModel model) {
         CASE_ENUM_STR(Shading_IBL_Irradiance);
         CASE_ENUM_STR(Shading_IBL_Prefilter);
         CASE_ENUM_STR(Shading_FXAA);
-    default:
-        break;
+        default:
+            break;
     }
     return "";
 }
@@ -35,8 +35,8 @@ const char* Material::materialTexTypeStr(MaterialTexType usage) {
         CASE_ENUM_STR(MaterialTexType_IBL_PREFILTER);
         CASE_ENUM_STR(MaterialTexType_QUAD_FILTER);
         CASE_ENUM_STR(MaterialTexType_SHADOWMAP);
-    default:
-        break;
+        default:
+            break;
     }
     return "";
 }

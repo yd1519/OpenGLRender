@@ -8,6 +8,7 @@
 #include "Viewer/RenderDebug.h"
 #include "Viewer/ViewerOpenGL.h"
 #include "Viewer/ViewerSoftware.h"
+#include "Viewer/OrbitController.h"
 
 namespace OpenGL {
 
@@ -23,7 +24,10 @@ public:
 
 		// camera		
 		camera_ = std::make_shared<Camera>();
-		camera_->setPerspective(ZOOM, (float)width / (float)height, CAMERA_NEAR, CAMERA_FAR);
+		camera_->setPerspective(glm::radians(CAMERA_FOV), (float)width / (float)height, CAMERA_NEAR, CAMERA_FAR);
+
+		orbitController_ = std::make_shared<SmoothOrbitController>(std::make_shared<OrbitController>(*camera_));
+
 
 		// config
 		config_ = std::make_shared<Config>();
@@ -49,7 +53,7 @@ public:
 
 	//设置控制面板的各种按钮的回调函数
 	void setupConfigPanelActions() {
-		configPanel_->setResetCameraFunc([&]() -> void { camera_->reset(); });
+		configPanel_->setResetCameraFunc([&]() -> void { orbitController_->reset(); });
 		configPanel_->setResetMipmapsFunc([&]() -> void {
 			waitRenderIdle();
 			modelLoader_->getScene().model->resetStates(); 
@@ -82,6 +86,7 @@ public:
 	}
 
 	int drawFrame() {
+		orbitController_->update();
 		camera_->update();
 		configPanel_->update();
 
@@ -146,6 +151,21 @@ public:
 		configPanel_->updateSize(width, height);
 	}
 
+	inline void updateGestureZoom(float x, float y) {
+		orbitController_->zoomX = x;
+		orbitController_->zoomY = y;
+	}
+
+	inline void updateGestureRotate(float x, float y) {
+		orbitController_->rotateX = x;
+		orbitController_->rotateY = y;
+	}
+
+	inline void updateGesturePan(float x, float y) {
+		orbitController_->panX = x;
+		orbitController_->panY = y;
+	}
+
 	inline bool wantCaptureKeyboard() {
 		return configPanel_->wantCaptureKeyboard();
 	}
@@ -154,17 +174,6 @@ public:
 		return configPanel_->wantCaptureMouse();
 	}
 
-	inline void updateGestureZoom(double yoffset) {
-		camera_->ProcessMouseScroll(static_cast<float>(yoffset));
-	}
-
-	inline void updateGestureRotate(float xoffset, float yoffset) {
-		camera_->ProcessMouseMovement(xoffset, yoffset);
-	}
-
-	inline void processKeyboard(Camera_Movement move, float deltaTime) {
-		camera_->ProcessKeyboard(move, deltaTime);
-	}
 
 private:
 	void* window_ = nullptr;
@@ -175,6 +184,7 @@ private:
 	std::shared_ptr<Config> config_;
 	std::shared_ptr<ConfigPanel> configPanel_;
 	std::shared_ptr<Camera> camera_;
+	std::shared_ptr<SmoothOrbitController> orbitController_;
 	std::shared_ptr<ModelLoader> modelLoader_;
 	
 	std::unordered_map<int, std::shared_ptr<Viewer>> viewers_;
