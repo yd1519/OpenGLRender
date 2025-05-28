@@ -165,7 +165,7 @@ public:
     };
 };
 
-// 自动生成接口实现
+// 自动生成接口实现， def表示启用哪些define
 #define CREATE_SHADER_OVERRIDE                          \
     ShaderDefines *def = nullptr;                         \
     ShaderAttributes *a = nullptr;                        \
@@ -204,8 +204,6 @@ public:
     std::shared_ptr<ShaderSoft> clone() override {        \
         return std::make_shared<T>(*this);                  \
     }
-
-
 
 }
 

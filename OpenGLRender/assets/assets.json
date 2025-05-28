@@ -20,6 +20,12 @@
 		},
 		"Robot": {
 			"path": "Robot/scene.gltf"
+		},
+		"Lantern": {
+			"path": "Lantern/Lantern.gltf"
+		},
+		"WaterBottle": {
+			"path": "WaterBottle/WaterBottle.gltf"
 		}
 	},
 	"skybox": {
@@ -31,6 +37,9 @@
 		},
 		"Hotel": {
 			"path": "Skybox/Hotel.jpg"
+		},
+		"newport_loft": {
+			"path": "Skybox/newport_loft.hdr"
 		}
 	}
 }

@@ -120,7 +120,7 @@ private:
     std::shared_ptr<ShaderSoft> vertexShader_;
     std::shared_ptr<ShaderSoft> fragmentShader_;
 
-    std::shared_ptr<uint8_t> definesBuffer_;  //宏定义启用状态缓冲区  0->false; 1->true
+    std::shared_ptr<uint8_t> definesBuffer_;  //宏定义启用状态缓冲区  0->false; 1->true，对应shadersoft中的def
     std::shared_ptr<uint8_t> uniformBuffer_;   //Uniform变量数据缓冲区
 
 private:

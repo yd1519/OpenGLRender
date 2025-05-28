@@ -52,7 +52,7 @@ std::shared_ptr<UniformSampler> RendererSoft::createUniformSampler(const std::st
     return std::make_shared<UniformSamplerSoft>(name, desc.type, desc.format);
 }
 
-// 初始化帧缓冲和清除状态
+// 配置并清理颜色和深度缓冲
 void RendererSoft::beginRenderPass(std::shared_ptr<FrameBuffer>& frameBuffer, const ClearStates& states) {
     fbo_ = dynamic_cast<FrameBufferSoft*>(frameBuffer.get());
 
@@ -63,11 +63,12 @@ void RendererSoft::beginRenderPass(std::shared_ptr<FrameBuffer>& frameBuffer, co
     fboColor_ = fbo_->getColorBuffer();
     fboDepth_ = fbo_->getDepthBuffer();
 
+    //清理颜色缓冲
     if (states.colorFlag && fboColor_) {
         RGBA color = RGBA(states.clearColor.r * 255,
-            states.clearColor.g * 255,
-            states.clearColor.b * 255,
-            states.clearColor.a * 255);
+                          states.clearColor.g * 255,
+                          states.clearColor.b * 255,
+                          states.clearColor.a * 255);
         if (fboColor_->multiSample) {
             fboColor_->bufferMs4x->setAll(glm::tvec4<RGBA>(color));
         }
@@ -76,6 +77,7 @@ void RendererSoft::beginRenderPass(std::shared_ptr<FrameBuffer>& frameBuffer, co
         }
     }
 
+    //清理深度缓冲
     if (states.depthFlag && fboDepth_) {
         if (fboDepth_->multiSample) {
             fboDepth_->bufferMs4x->setAll(glm::tvec4<float>(states.clearDepth));
@@ -147,7 +149,7 @@ void RendererSoft::draw() {
     fboDepth_ = fbo_->getDepthBuffer();
     primitiveType_ = renderState_->primitiveType;
 
-    if (fboColor_) {
+    if (fboColor_) {// 优先使用颜色缓冲的采样数
         rasterSamples_ = fboColor_->sampleCnt;
     }
     else if (fboDepth_) {
@@ -174,16 +176,15 @@ void RendererSoft::endRenderPass() {}
 
 void RendererSoft::waitIdle() {}
 
-/*  初始化顶点着色器的变长属性（varyings）存储空间
-        遍历所有顶点数据，执行顶点着色器程序
-        处理顶点数据的对齐和内存布局*/
+/*初始化顶点着色器（varyings）存储空间,遍历所有顶点数据，执行顶点着色器程序*/
 void RendererSoft::processVertexShader() {
-    //初始化变长属性（varyings）缓冲区
+    //初始化varyings缓冲区
     varyingsCnt_ = shaderProgram_->getShaderVaryingsSize() / sizeof(float);
-    varyingsAlignedSize_ = MemoryUtils::alignedSize(varyingsCnt_ * sizeof(float));// 通常按16字节对齐优化SIMD
+    varyingsAlignedSize_ = MemoryUtils::alignedSize(varyingsCnt_ * sizeof(float)); 
     varyingsAlignedCnt_ = varyingsAlignedSize_ / sizeof(float);
 
-    varyings_ = MemoryUtils::makeAlignedBuffer<float>(vao_->vertexCnt * varyingsAlignedCnt_);
+    // 为所有顶点的输出分配空间
+    varyings_ = MemoryUtils::makeAlignedBuffer<float>(vao_->vertexCnt * varyingsAlignedCnt_); 
     float* varyingBuffer = varyings_.get();
 
     // 准备顶点数据输入
@@ -201,8 +202,8 @@ void RendererSoft::processVertexShader() {
         vertexPtr += vao_->vertexStride;
     }
 }
-
-// 根据图元类型进行图元装配处理
+    
+// 根据图元类型进行图元装配处理，存储在primitives_
 void RendererSoft::processPrimitiveAssembly() {
     switch (primitiveType_) {
     case Primitive_POINT:
@@ -573,7 +574,7 @@ void RendererSoft::clippingTriangle(PrimitiveHolder& triangle, std::vector<Primi
 
                 // 规则2：线段与裁剪平面相交 → 计算交点
                 if (std::signbit(dPre) != std::signbit(d)) {
-                    float t = d < 0 ? dPre / (dPre - d) : -dPre / (d - dPre);// 计算交点参数t（注意处理除以零）
+                    float t = d < 0 ? dPre / (dPre - d) : -dPre / (d - dPre); // 保证分母为正，减小浮点误差
                     // 创建新顶点（插值顶点属性）
                     auto vertIdx = clippingNewVertex(idxPre, idx, t);
                     indicesOut.push_back(vertIdx);
@@ -1063,7 +1064,7 @@ size_t RendererSoft::clippingNewVertex(size_t idx0, size_t idx1, float t, bool p
 
 /*执行顶点着色器处理，进行mvp变换之类的，转换到裁剪空间*/
 void RendererSoft::vertexShaderImpl(VertexHolder& vertex) {
-    shaderProgram_->bindVertexAttributes(vertex.vertex);//将原始顶点数据（vertex.vertex）传递给着色器程序
+    shaderProgram_->bindVertexAttributes(vertex.vertex); // 将原始顶点数据（vertex.vertex）传递给着色器程序
     shaderProgram_->bindVertexShaderVaryings(vertex.varyings);// 为着色器指定varying变量的输出内存位置
     shaderProgram_->execVertexShader();
 

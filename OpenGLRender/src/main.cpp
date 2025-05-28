@@ -144,7 +144,7 @@ int main() {
     glUniform1i(glGetUniformLocation(program.getId(), "uTexture"), 0);//设置着色器纹理的纹理单元。
 
     // init Viewer
-    viewer = std::make_shared<OpenGL::ViewerManager>();//默认构造函数，啥也不干。
+    viewer = std::make_shared<OpenGL::ViewerManager>();
     bool initSuccess = viewer->create(window, SCR_WIDTH, SCR_HEIGHT, (int)texture); //创建出各类渲染器的Viewer
     if (!initSuccess) {
         LOGE("Failed to create Viewer");

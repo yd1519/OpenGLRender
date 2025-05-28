@@ -27,17 +27,17 @@ struct VertexHolder {
     bool discard = false;
     size_t index = 0; // 在顶点数组中的下标
 
-    void* vertex = nullptr;
-    float* varyings = nullptr;
+    void* vertex = nullptr; // 指向vao中第index个顶点数据
+    float* varyings = nullptr; // 指向渲染器中varyings第index个varying
 
-    int clipMask = 0; // 裁剪空间掩码(6个裁剪平面)
-    glm::aligned_vec4 clipPos = glm::vec4(0.f);     // 裁剪空间坐标
+    int clipMask = 0; // 裁剪空间掩码(6个裁剪平面)，
+    glm::aligned_vec4 clipPos = glm::vec4(0.f);     // 裁剪空间坐标，经过顶点着色器处理后得出
     glm::aligned_vec4 fragPos = glm::vec4(0.f);     // 屏幕空间坐标
     std::shared_ptr<uint8_t> vertexHolder = nullptr; //顶点数据内存块
-    std::shared_ptr<float> varyingsHolder = nullptr; //varying数据内存块，varying：插值变量
+    std::shared_ptr<float> varyingsHolder = nullptr; //varying数据内存块
 };                                                                                  
 
-// 图元数据容器
+// 图元数据容器，图元装配阶段
 struct PrimitiveHolder {
     bool discard = false;
     bool frontFacing = true; // 是否正面朝向

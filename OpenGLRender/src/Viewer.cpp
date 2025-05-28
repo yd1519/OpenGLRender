@@ -106,10 +106,10 @@ void Viewer::drawFrame(DemoScene& scene) {
 	initSkyboxIBL();
 
 	// setup model materials
-	setupScene();// 场景材质与模型数据
+	setupScene();// 配置所有渲染对象模的materialObj
 
-	// draw shadow map
-	drawShadowMap(); //阴影贴图生成
+	//阴影贴图生成
+	drawShadowMap(); 
 
 	// setup fxaa
 	processFXAASetup();

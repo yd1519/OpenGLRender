@@ -69,7 +69,7 @@ class ShaderBlinnPhong : public ShaderSoft {
 public:
     CREATE_SHADER_OVERRIDE
 
-        std::vector<std::string>& getDefines() override {
+    std::vector<std::string>& getDefines() override {
         static std::vector<std::string> defines = {
             "ALBEDO_MAP",
             "NORMAL_MAP",

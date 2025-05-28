@@ -25,9 +25,7 @@ public:
 		// camera		
 		camera_ = std::make_shared<Camera>();
 		camera_->setPerspective(glm::radians(CAMERA_FOV), (float)width / (float)height, CAMERA_NEAR, CAMERA_FAR);
-
 		orbitController_ = std::make_shared<SmoothOrbitController>(std::make_shared<OrbitController>(*camera_));
-
 
 		// config
 		config_ = std::make_shared<Config>();
@@ -48,7 +46,7 @@ public:
 		setupConfigPanelActions();
 
 		// 初始化控制面板
-		return configPanel_->init(window, width, height);
+		return configPanel_->init(window, width, height); // 加载第一个model和skybox
 	}
 
 	//设置控制面板的各种按钮的回调函数
@@ -86,9 +84,9 @@ public:
 	}
 
 	int drawFrame() {
-		orbitController_->update();
-		camera_->update();
-		configPanel_->update();
+		orbitController_->update(); // 更新相机位置
+		camera_->update();	
+		configPanel_->update(); // 更新光源位置
 
 		config_->triangleCount_ = modelLoader_->getModelPrimitiveCnt();
 

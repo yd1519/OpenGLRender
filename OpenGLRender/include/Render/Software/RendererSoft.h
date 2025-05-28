@@ -107,7 +107,6 @@ private:
 	const RenderStates* renderState_ = nullptr;
 	VertexArrayObjectSoft* vao_ = nullptr;
 	ShaderProgramSoft* shaderProgram_ = nullptr;
-
 	//------------------------------帧缓冲资源--------------------------------
 	std::shared_ptr<ImageBufferSoft<RGBA>> fboColor_ = nullptr;
 	std::shared_ptr<ImageBufferSoft<float>> fboDepth_ = nullptr;
@@ -115,7 +114,7 @@ private:
 	std::vector<VertexHolder> vertexes_; // 处理中的顶点
 	std::vector<PrimitiveHolder> primitives_; // 处理中的图元，其中包含顶点索引
 	//----------------------------着色器变量存储----------------------------------
-	std::shared_ptr<float> varyings_ = nullptr;// 顶点着色器输出变量
+	std::shared_ptr<float> varyings_ = nullptr;// 存放所有顶点着色器输出给片段着色器的内容
 	size_t varyingsCnt_ = 0;
 	size_t varyingsAlignedCnt_ = 0;
 	size_t varyingsAlignedSize_ = 0;

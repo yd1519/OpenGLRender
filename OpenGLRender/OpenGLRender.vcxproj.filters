@@ -275,7 +275,7 @@
     <ClCompile Include="src\Material.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\RendererSoft.cpp">
